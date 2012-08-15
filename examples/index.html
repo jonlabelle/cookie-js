@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Cookie examples</title>
+</head>
+<body>
+  <div id="content">
+    <h1>Check your console log...</h1>
+    <p id="recommend">I highly recommend FireFox 14+ with FireBug > Cookies console.</p>
+  </div>
+
+  <script type="text/javascript" src="../src/Cookie.js"></script>
+  <script type="text/javascript">
+
+    Cookie.set("singleCookie", "expiresIn30", {
+      expires: 30 // set expires to 30-days.
+    });
+
+    Cookie.set("expiredatecooke", "January 12, 2025", {
+      expires: new Date("January 12, 2025") // expires January 12, 2025
+    });
+
+
+    Cookie.setSub("subcookiecontainer",  "subcookiename",  "subcookievalue");  // session cookie.
+    Cookie.remove("subcookiecontainer"); // testing removal
+
+    Cookie.setSub("subcookiecontainer2", "subcookiename2", "subcookievalue2"); // session cookie.
+
+
+    var subCookieData = {
+      name: "ace123",
+      age: 22,
+      track: true
+    };
+
+    // set a cookie named "user" with subcookies
+    Cookie.setSubs("subcookiecontainer3", subCookieData);
+
+
+    var sValue = Cookie.getSub("subcookiecontainer2", "subcookiename2");
+    console.log('Got a single sub-cookie value from subcookiecontainer2: ', sValue);
+
+
+    var subs = Cookie.getSubs("subcookiecontainer3");
+    console.log('Get an Object from subcookiecontainer3 sub-cookie: ', subs);
+
+  </script>
+
+</body>
+</html>

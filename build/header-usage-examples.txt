@@ -1,0 +1,152 @@
+/**
+ *          Cookie.js - USAGE AND EXAMPLES
+ * 
+ * ---------------------------------------------------
+ * No options
+ * ---------------------------------------------------
+ * 
+ * This example creates a cookie called "name" that has 
+ * a value of "value". Since this cookie is created 
+ * with all of the default settings, it becomes a 
+ * session cookie.
+ * 
+ * Cookie.set("name", "value");
+ * 
+ * ---------------------------------------------------
+ * Setting expires date
+ * ---------------------------------------------------
+ * 
+ * Cookie.set("name", "value", {
+ *   expires: new Date("January 12, 2025")
+ * });
+ * 
+ * ---------------------------------------------------
+ * Restrict cookie access to path and domain
+ * ---------------------------------------------------
+ * 
+ * Cookie access for all pages under domain 
+ * jonlabelle.com.
+ * 
+ * Cookie.set("name", "value", {
+ *   path: "/",
+ *   domain: "jonlabelle.com"
+ * });
+ * 
+ * ---------------------------------------------------
+ * Secure cookie (https)
+ * ---------------------------------------------------
+ * 
+ * Cookie.set("name", "value", {
+ *   secure: true 
+ * });
+ * 
+ * ---------------------------------------------------
+ * Read cookie
+ * ---------------------------------------------------
+ * 
+ * Returns null if the cookie does not exist.
+ * 
+ * var value = Cookie.get("name");
+ *
+ * ---------------------------------------------------
+ * Read cookie, by type
+ * --------------------------------------------------- 
+ * 
+ * The returned cookie value will be a number if the 
+ * cookie exists (it will still be null if the cookie 
+ * doesn't exist). Other native functions that convert 
+ * values are Boolean() and Date, or you can define 
+ * your own conversion function:
+ * 
+ * var value = Cookie.get("age", Number);
+ * 
+ * var value = Cookie.get("code", function (stringValue) {
+ *   return parseInt(stringValue, 16); // create a number from a hexadecimal code
+ * });
+ * 
+ * ---------------------------------------------------
+ * Deleting cookies
+ * --------------------------------------------------- 
+ *
+ * // Delete the cookie named "code"
+ * Cookie.remove("code");
+ * 
+ * // Delete the cookie named "info" on the "yahoo.com" domain
+ * Cookie.remove("info", {
+ *   domain: "yahoo.com"
+ * });
+ * 
+ * // Delete a secure cookie named "username"
+ * Cookie.remove("username", {
+ *   secure: true
+ * });
+ * 
+ * ---------------------------------------------------
+ * Sub-cookies
+ * --------------------------------------------------- 
+ * 
+ * // set a cookie named "name" with a sub-cookie named "subname" whose value is "value"
+ * Cookie.setSub("name", "subname", "value");
+ * 
+ * // set a second sub-cookie on "name", with a name of "subname2" and a value of "value2"
+ * Cookie.setSub("name", "subname2", "value2");
+ *  
+ * // set sub-cookie on the "jonlabelle.com" domain
+ * Cookie.setSub("info", "age", 22, {
+ *   domain: "jonlabelle.com"
+ * });
+ * 
+ * // set sub-cookie to a secure cookie named "user"
+ * Cookie.setSub("user", "name", "ace123", {
+ *   secure:true
+ * });
+ * 
+ * ---------------------------------------------------
+ * Set sub-cookie with object
+ * ---------------------------------------------------
+ * 
+ * var subCookieData = {
+ *   name: "ace123",
+ *   age: 22,
+ *   track: true
+ * };
+ * 
+ * // set a cookie named "user" with sub-cookies
+ * Cookie.setSubs("user", subCookieData);
+ * 
+ * NOTE: Calls to setSubs() will always completely 
+ * overwrite the cookie.
+ * 
+ * ---------------------------------------------------
+ * Get sub-cookie
+ * ---------------------------------------------------
+ * 
+ * // get sub-cookie
+ * var sValue = Cookie.getSub("name", "subname");
+ * 
+ * // get sub-cookie and convert to number
+ * var nValue = Cookie.getSub("user", "age", Number);
+ * 
+ * // get all sub-cookies
+ * var oData = Cookie.getSubs("name");
+ * var sSubValue = oData.subname;
+ * 
+ * // get all sub-cookies
+ * var oUser = Cookie.getSubs("user");
+ * var sUserName = oUser.name;
+ * 
+ * ---------------------------------------------------
+ * Removing sub-cookies
+ * ---------------------------------------------------
+ * 
+ * // set sub-cookie on the "jonlabelle.com" domain
+ * Cookie.setSub("info", "age", 22, {
+ *   domain: "jonlabelle.com"
+ * });
+ * 
+ * // remove the sub-cookie
+ * Cookie.removeSub("info", "age", {
+ *   domain: "jonlabelle.com"
+ * });
+ * 
+ */

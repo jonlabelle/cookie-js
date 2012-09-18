@@ -15,7 +15,7 @@
  * Licensed under the MIT license:
  * http://creativecommons.org/licenses/MIT/
  *
- * Date: Mon Sep 17 20:27:14 2012 -0500
+ * Date: Mon Sep 17 22:34:50 2012 -0500
  */
 (function (window, undefined) {
 
@@ -58,7 +58,7 @@
       var text = encode(name) + "=" + (encodeValue ? encode(value) : value),
         expires = options.expires,
         path = options.path || "/",
-        domain = options.domain || "";
+        domain = options.domain;
 
       // EXPIRATION DATE
       if (expires instanceof Date) {
@@ -73,15 +73,15 @@
         t.setDate(t.getDate() + days);
         text += "; expires=" + expires.toUTCString();
 
-      } else {
-        text += "; expires=" + '';
       }
 
       // PATH
       text += "; path=" + path;
 
       // DOMAIN
-      text += "; domain=" + domain;
+      if (domain) {
+        text += "; domain=" + domain;
+      }
 
       // SECURE
       if (options.secure === true) {
@@ -93,16 +93,11 @@
 
     _createCookieHashString: function (hash) {
 
-      if (!hash) {
-        return "";
-      }
-
-      if (typeof hash !== "object") {
+      if (hash === null || typeof (hash) !== "object") {
         return "";
       }
 
       var text = [];
-
 
       this._forEach(hash, function (key, value) {
         if (typeof value !== "function" && typeof value !== "undefined") {
@@ -130,10 +125,9 @@
     },
 
     _parseCookieString: function (text, shouldDecode) {
-
       var cookies = {};
 
-      if (typeof text === "string" && text.length > 0) {
+      if (typeof (text) === "string" && text.length > 0) {
 
         var decodeValue = (shouldDecode === false ? function (s) {
           return s;
@@ -202,11 +196,11 @@
       cookie = cookies[name];
 
       // should return null, not undefined if the cookie doesn't exist
-      if (!cookie || typeof cookie === "undefined") {
+      if (cookie === null || typeof (cookie) === "undefined") {
         return null;
       }
 
-      if (typeof converter === "function") {
+      if (typeof (converter) === "function") {
         return converter(cookie);
       }
 
@@ -216,15 +210,15 @@
     getSub: function (name, subName, converter) {
       var hash = this.getSubs(name);
 
-      if (!hash && hash === null) {
+      if (hash === null) {
         return null;
       }
 
-      if (!subName) {
+      if (typeof (subName) === "undefined" || subName === null) {
         return null;
       }
 
-      if (!hash[subName] || typeof hash[subName] === "undefined") {
+      if (hash[subName] === null || typeof (hash[subName]) === "undefined") {
         return null;
       }
 
@@ -236,13 +230,14 @@
     },
 
     getSubs: function (name) {
-      if (!name) {
+
+      if (typeof (name) === "undefined" || name === null) {
         return null;
       }
 
       var cookies = this._parseCookieString(document.cookie, false);
 
-      if (typeof cookies[name] === "string") {
+      if (typeof (cookies[name]) === "string") {
         return this._parseCookieHash(cookies[name]);
       }
 
@@ -261,7 +256,11 @@
     },
 
     removeSub: function (name, subName, options) {
-      if (!name || !subName) {
+      if (typeof (name) === "undefined" || name === null) {
+        return "";
+      }
+
+      if (typeof (subName) === "undefined" || subName === null) {
         return "";
       }
 
@@ -271,21 +270,23 @@
       var subs = this.getSubs(name);
 
       // delete the indicated subcookie
-      if (typeof subs === "object" && subs.hasOwnProperty(subName)) {
+      if (typeof (subs) === "object" && subs.hasOwnProperty(subName)) {
         delete subs[subName];
 
         if (!options.removeIfEmpty) {
+
           // reset the cookie
           return this.setSubs(name, subs, options);
 
         } else {
+
           // reset the cookie if there are subcookies left, else remove
           for (var key in subs) {
             if (subs.hasOwnProperty(key) && !typeof subs[key] === "function" && !typeof subs[key] === "undefined") {
-
               return this.setSubs(name, subs, options);
             }
           }
+
           return this.remove(name, options);
         }
 
@@ -308,35 +309,36 @@
     },
 
     setSub: function (name, subName, value, options) {
-      if (!name || !subName) {
+
+      if (typeof (name) === "undefined" || typeof (subName) === "undefined") {
         return "";
       }
 
-      if (typeof value === "undefined") {
+      if (typeof (value) === "undefined") {
         //error("Cookie.setSub(): Subcookie value cannot be undefined.");
         value = "";
       }
 
       var hash = this.getSubs(name);
 
-      if (!hash || typeof hash !== "object") {
+      if (hash === null || typeof (hash) !== "object") {
         hash = {};
       }
 
-      if (subName && value) {
-        hash[subName] = value;
-      }
+      hash[subName] = value;
+
 
       return this.setSubs(name, hash, options);
     },
 
     setSubs: function (name, value, options) {
-      if (!name) {
+
+      if (name === null || typeof (name) === "undefined") {
         return "";
       }
 
-      if (!value || typeof value !== "object") {
-        value = "";
+      if (value === null || typeof (value) === "undefined" || typeof (value) !== "object") {
+        return "";
       }
 
       var text = this._createCookieString(name, this._createCookieHashString(value), false, options);

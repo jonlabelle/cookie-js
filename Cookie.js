@@ -1,28 +1,26 @@
 /*
  * Cookie.js v1.2
- * 
+ *
  * Manage all your cookies and sub-cookies with Cookie.js. Cookies.js is a
- * stand-alone script and does NOT require additional libraries (jQuery, YUI, 
+ * stand-alone script and does NOT require additional libraries (jQuery, YUI,
  * etc.) to operate.
- * 
- * Cookie.js is a modified and decoupled version of YUI's cookie management 
- * utility. Visit the YUI developer network for more info. 
- * -- http://developer.yahoo.com/yui.
- * 
+ *
  * Copyright (c) 2012, Jon LaBelle
  * http://jonlabelle.com
  *
  * Licensed under the MIT license:
  * http://creativecommons.org/licenses/MIT/
  *
- * Date: Mon Sep 17 23:55:42 2012 -0500
+ * Date: Tue Sep 18 14:52:21 2012 -0500
  */
 (function (window, undefined) {
+
+  'use strict';
 
   var encode = encodeURIComponent,
       decode = decodeURIComponent;
 
-  Cookie = {
+  var Cookie = {
 
     /**
      * Iterate over an object.
@@ -191,9 +189,9 @@
         var decodeValue = (shouldDecode === false ? function (s) {
           return s;
         } : decode),
-          cookieParts = text.split(/;\s/g),
-          cookieName = null,
-          cookieValue = null,
+          cookieParts     = text.split(/;\s/g),
+          cookieName      = null,
+          cookieValue     = null,
           cookieNameValue = null;
 
         for (var i = 0, len = cookieParts.length; i < len; i++) {
@@ -204,7 +202,7 @@
           if (this.isArray(cookieNameValue)) {
 
             try {
-              cookieName = decode(cookieNameValue[1]);
+              cookieName  = decode(cookieNameValue[1]);
               cookieValue = decodeValue(cookieParts[i].substring(cookieNameValue[1].length + 1));
 
             } catch (ex) {
@@ -232,10 +230,6 @@
      * @return {bool}
      */
     exists: function (name) {
-      if (!name) {
-        return false;
-      }
-
       var cookies = this.parseCookieString(document.cookie, true);
       return cookies.hasOwnProperty(name);
     },
@@ -249,12 +243,8 @@
      */
     get: function (name, options) {
       var cookies,
-      cookie,
-      converter;
-
-      if (name === null || typeof (name) === "undefined") {
-        return null;
-      }
+          cookie,
+          converter;
 
       // if options is a function, then it's the converter
       if (typeof options === "function") {
@@ -321,10 +311,6 @@
      */
     getSubs: function (name) {
 
-      if (typeof (name) === "undefined" || name === null) {
-        return null;
-      }
-
       var cookies = this.parseCookieString(document.cookie, false);
 
       if (typeof (cookies[name]) === "string") {
@@ -349,7 +335,9 @@
       });
 
       // set cookie
-      return this.set(name, "", options);
+      this.set(name, "", options);
+
+      return this;
     },
 
     /**
@@ -417,7 +405,7 @@
       var text = this.createCookieString(name, value, !options.raw, options);
       document.cookie = text;
 
-      return text;
+      return this;
     },
 
     /**
@@ -482,7 +470,7 @@
     enabled: function () {
 
       var key = "jUQFUy5j3vHnA14R",
-        val = "cookieMonster";
+          val = "cookieMonster";
 
       var cookieEnabled = (navigator.cookieEnabled) ? true : false;
 
@@ -499,5 +487,7 @@
     }
 
   };
+
+  window.Cookie = Cookie;
 
 }(window));

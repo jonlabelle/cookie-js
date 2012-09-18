@@ -1,5 +1,5 @@
 /*
- * Cookie.js v
+ * Cookie.js v1.1
  * 
  * Manage all your cookies and sub-cookies with Cookie.js. Cookies.js is a
  * stand-alone script and does NOT require additional libraries (jQuery, YUI, 
@@ -15,12 +15,12 @@
  * Licensed under the MIT license:
  * http://creativecommons.org/licenses/MIT/
  *
- * Date: Mon Sep 17 19:52:31 2012 -0500
+ * Date: Mon Sep 17 20:27:14 2012 -0500
  */
 (function (window, undefined) {
 
   var encode = encodeURIComponent,
-      decode = decodeURIComponent;
+    decode = decodeURIComponent;
 
   Cookie = {
 
@@ -32,7 +32,7 @@
       }
     },
 
-     _isArray: Array.isArray || function(obj) {
+    _isArray: Array.isArray || function (obj) {
       return (typeof (obj.length) === "undefined") ? false : true;
     },
 
@@ -55,42 +55,37 @@
 
       options = options || {};
 
-      var text    = encode(name) + "=" + (encodeValue ? encode(value) : value),
-          expires = options.expires,
-          path    = options.path,
-          domain  = options.domain;
+      var text = encode(name) + "=" + (encodeValue ? encode(value) : value),
+        expires = options.expires,
+        path = options.path || "/",
+        domain = options.domain || "";
 
-      if (typeof options === "object") {
+      // EXPIRATION DATE
+      if (expires instanceof Date) {
+        text += "; expires=" + expires.toUTCString();
 
-        // EXPIRATION DATE
-        if (expires instanceof Date) {
-          text += "; expires=" + expires.toUTCString();
+      } else if (this._isNumeric(expires)) {
 
-        } else if (this._isNumeric(expires)) {
+        // EXPIRATION IN DAYS
+        var days = expires;
+        var t = expires = new Date();
 
-          // EXPIRATION IN DAYS
-          var days = expires;
-          var t = expires = new Date();
+        t.setDate(t.getDate() + days);
+        text += "; expires=" + expires.toUTCString();
 
-          t.setDate(t.getDate() + days);
-          text += "; expires=" + expires.toUTCString();
-        }
+      } else {
+        text += "; expires=" + '';
+      }
 
-        // PATH
-        if (path && typeof path === "string") {
-          text += "; path=" + path;
-        }
+      // PATH
+      text += "; path=" + path;
 
-        // DOMAIN
-        if (domain && typeof domain === "string") {
-          text += "; domain=" + domain;
-        }
+      // DOMAIN
+      text += "; domain=" + domain;
 
-        // SECURE
-        if (options.secure === true) {
-          text += "; secure";
-        }
-
+      // SECURE
+      if (options.secure === true) {
+        text += "; secure";
       }
 
       return text;
@@ -152,7 +147,7 @@
 
           // check for normally-formatted cookie (name-value)
           cookieNameValue = cookieParts[i].match(/([^=]+)=/i);
-          
+
           if (this._isArray(cookieNameValue)) {
 
             try {
@@ -188,8 +183,8 @@
 
     get: function (name, options) {
       var cookies,
-          cookie,
-          converter;
+      cookie,
+      converter;
 
       // if options is a function, then it's the converter
       if (typeof options === "function") {
@@ -221,7 +216,7 @@
     getSub: function (name, subName, converter) {
       var hash = this.getSubs(name);
 
-      if (!hash && hash === null) { 
+      if (!hash && hash === null) {
         return null;
       }
 
@@ -350,11 +345,11 @@
       return text;
     },
 
-    enabled: function() {
+    enabled: function () {
       // quick way to check if cookies are enabled.
 
       var key = "jUQFUy5j3vHnA14R",
-          val = "cookieMonster";
+        val = "cookieMonster";
 
       var cookieEnabled = (navigator.cookieEnabled) ? true : false;
 
@@ -366,7 +361,7 @@
       if (cookieEnabled) {
         this.remove(key);
       }
-      
+
       return cookieEnabled;
     }
 

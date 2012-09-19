@@ -11,7 +11,7 @@
  * Licensed under the MIT license:
  * http://creativecommons.org/licenses/MIT/
  *
- * Date: Tue Sep 18 14:52:21 2012 -0500
+ * Date: Wed Sep 19 10:41:55 2012 -0500
  */
 (function (window, undefined) {
 
@@ -38,6 +38,39 @@
     },
 
     /**
+     * Merges two objects.
+     *
+     * @access internal
+     * @param  {obj} original
+     * @param  {obj} newObject
+     * @return {obj} The combined merged objects.
+     */
+    merge: function (original, newObject) {
+      for (var key in newObject) {
+        if (newObject.hasOwnProperty(key)) {
+          var newPropertyValue = newObject[key];
+          var originalPropertyValue = original[key];
+        }
+        original[key] = (originalPropertyValue && typeof newPropertyValue === 'object' && typeof originalPropertyValue === 'object') ? this.merge(originalPropertyValue, newPropertyValue) : newPropertyValue;
+      }
+      return original;
+    },
+
+    /**
+     * Checks if an object has any properties.
+     *
+     * @param  {obj}  obj
+     * @return {bool}
+     */
+    isEmptyObject: function(obj) {
+      var name;
+      for (name in obj) {
+        return false;
+      }
+      return true;
+    },
+
+    /**
      * Is Array
      *
      * @access internal
@@ -56,25 +89,6 @@
      */
     isNumeric: function (val) {
       return !isNaN(parseFloat(val)) && isFinite(val);
-    },
-
-    /**
-     * Merges two objects.
-     *
-     * @access internal
-     * @param  {obj} original
-     * @param  {obj} newObject
-     * @return {obj} The combined merged objects.
-     */
-    merge: function (original, newObject) {
-      for (var key in newObject) {
-        if (newObject.hasOwnProperty(key)) {
-          var newPropertyValue = newObject[key];
-          var originalPropertyValue = original[key];
-        }
-        original[key] = (originalPropertyValue && typeof newPropertyValue === 'object' && typeof originalPropertyValue === 'object') ? this.merge(originalPropertyValue, newPropertyValue) : newPropertyValue;
-      }
-      return original;
     },
 
     /**
@@ -102,7 +116,7 @@
 
       } else if (this.isNumeric(expires)) {
 
-        // EXPIRATION AS DAYS (No.)
+        // EXPIRATION AS DAYS (int)
         var days = expires;
         var t = expires = new Date();
 
@@ -182,6 +196,7 @@
      * @return {obj}
      */
     parseCookieString: function (text, shouldDecode) {
+
       var cookies = {};
 
       if (typeof (text) === "string" && text.length > 0) {
@@ -206,7 +221,7 @@
               cookieValue = decodeValue(cookieParts[i].substring(cookieNameValue[1].length + 1));
 
             } catch (ex) {
-              // intentionally ignore the cookie - the encoding is wrong
+              // ignore cookie, the encoding is wrong.
             }
 
           } else {
@@ -217,7 +232,6 @@
 
           cookies[cookieName] = cookieValue;
         }
-
       }
 
       return cookies;
@@ -242,16 +256,17 @@
      * @return {mixed}
      */
     get: function (name, options) {
+
       var cookies,
           cookie,
           converter;
 
       // if options is a function, then it's the converter
-      if (typeof options === "function") {
+      if (typeof (options) === "function") {
         converter = options;
         options = {};
 
-      } else if (typeof options === "object") {
+      } else if (typeof (options) === "object") {
         converter = options.converter;
 
       } else {
@@ -296,7 +311,7 @@
         return null;
       }
 
-      if (typeof converter === "function") {
+      if (typeof (converter) === "function") {
         return converter(hash[subName]);
       }
 

@@ -1,17 +1,17 @@
 /*
- * Cookie.js v1.2
+ * Cookie.js v1.3
  *
  * Manage all your cookies and sub-cookies with Cookie.js. Cookies.js is a
  * stand-alone script and does NOT require additional libraries (jQuery, YUI,
  * etc.) to operate.
  *
- * Copyright (c) 2012, Jon LaBelle
+ * Copyright (c) 2013, Jon LaBelle
  * http://jonlabelle.com
  *
  * Licensed under the MIT license:
  * http://creativecommons.org/licenses/MIT/
  *
- * Date: Wed Sep 19 10:41:55 2012 -0500
+ * Date: Tue Apr 09 04:44:13 2013 -0500
  */
 (function (window, undefined) {
 
@@ -20,81 +20,68 @@
   var encode = encodeURIComponent,
       decode = decodeURIComponent;
 
+  /**
+   * Is Array
+   *
+   * @param  {mixed} obj Object to test.
+   * @return {bool}
+   */
+  function isArray(obj) {
+    return (typeof obj.length === "undefined") ? false : true;
+  }
+
+  /**
+   * Is Number check.
+   *
+   * @param  {mixed}  val The value to check.
+   * @return {bool}
+   */
+  function isNumeric (val) {
+    return !isNaN(parseFloat(val)) && isFinite(val);
+  }
+
+  /**
+   * Merges two objects.
+   *
+   * @param  {obj} original
+   * @param  {obj} newObject
+   * @return {obj} The combined merged objects.
+   */
+  function merge (original, newObject) {
+
+    for (var key in newObject) {
+      if (newObject.hasOwnProperty(key)) {
+        var newPropertyValue = newObject[key];
+        var originalPropertyValue = original[key];
+      }
+
+      original[key] = (originalPropertyValue && typeof newPropertyValue === "object" && typeof originalPropertyValue === "object") ? merge(originalPropertyValue, newPropertyValue) : newPropertyValue;
+    }
+
+    return original;
+  }
+
+  /**
+   * Iterate over an object.
+   *
+   * @param  {obj}      obj      The object to iterate.
+   * @param  {Function} callback The callback function.
+   */
+  function each (obj, callback) {
+
+    for (var k in obj) {
+      if (obj.hasOwnProperty(k)) {
+        callback(k, obj[k]);
+      }
+    }
+
+  }
+
   var Cookie = {
-
-    /**
-     * Iterate over an object.
-     *
-     * @access internal
-     * @param  {obj}      obj      The object to iterate.
-     * @param  {Function} callback The callback function.
-     */
-    each: function (obj, callback) {
-      for (var k in obj) {
-        if (obj.hasOwnProperty(k)) {
-          callback(k, obj[k]);
-        }
-      }
-    },
-
-    /**
-     * Merges two objects.
-     *
-     * @access internal
-     * @param  {obj} original
-     * @param  {obj} newObject
-     * @return {obj} The combined merged objects.
-     */
-    merge: function (original, newObject) {
-      for (var key in newObject) {
-        if (newObject.hasOwnProperty(key)) {
-          var newPropertyValue = newObject[key];
-          var originalPropertyValue = original[key];
-        }
-        original[key] = (originalPropertyValue && typeof newPropertyValue === 'object' && typeof originalPropertyValue === 'object') ? this.merge(originalPropertyValue, newPropertyValue) : newPropertyValue;
-      }
-      return original;
-    },
-
-    /**
-     * Checks if an object has any properties.
-     *
-     * @param  {obj}  obj
-     * @return {bool}
-     */
-    isEmptyObject: function(obj) {
-      var name;
-      for (name in obj) {
-        return false;
-      }
-      return true;
-    },
-
-    /**
-     * Is Array
-     *
-     * @access internal
-     * @param  {mixed} obj Object to test.
-     * @return {bool}
-     */
-    isArray: Array.isArray || function (obj) {
-      return (typeof (obj.length) === "undefined") ? false : true;
-    },
-
-    /**
-     * Is Number check.
-     *
-     * @param  {mixed}  val The value to check.
-     * @return {bool}
-     */
-    isNumeric: function (val) {
-      return !isNaN(parseFloat(val)) && isFinite(val);
-    },
 
     /**
      * Creates the cookie string.
      *
-     * @access internal
      * @param  {string} name
      * @param  {string} value
      * @param  {string} encodeValue Whether or not to encode the cookie values.
@@ -114,13 +101,14 @@
       if (expires instanceof Date) {
         text += "; expires=" + expires.toUTCString();
 
-      } else if (this.isNumeric(expires)) {
+      } else if (isNumeric(expires)) {
 
         // EXPIRATION AS DAYS (int)
         var days = expires;
         var t = expires = new Date();
 
         t.setDate(t.getDate() + days);
+
         text += "; expires=" + expires.toUTCString();
       }
 
@@ -143,19 +131,18 @@
     /**
      * Creates a string from a hash/object.
      *
-     * @access internal
      * @param  {obj} hash
      * @return {string}
      */
     createCookieHashString: function (hash) {
 
-      if (hash === null || typeof (hash) !== "object") {
+      if (hash === null || typeof hash !== "object") {
         return "";
       }
 
       var text = [];
 
-      this.each(hash, function (key, value) {
+      each(hash, function (key, value) {
         if (typeof value !== "function" && typeof value !== "undefined") {
           text.push(encode(key) + "=" + encode(String(value)));
         }
@@ -190,7 +177,6 @@
     /**
      * Parses a cookie into an object representation.
      *
-     * @access internal
      * @param  {string} text
      * @param  {bool}   shouldDecode Whether or not to decode the cookie values.
      * @return {obj}
@@ -199,7 +185,7 @@
 
       var cookies = {};
 
-      if (typeof (text) === "string" && text.length > 0) {
+      if (typeof text === "string" && text.length > 0) {
 
         var decodeValue = (shouldDecode === false ? function (s) {
           return s;
@@ -214,9 +200,10 @@
           // check for normally-formatted cookie (name-value)
           cookieNameValue = cookieParts[i].match(/([^=]+)=/i);
 
-          if (this.isArray(cookieNameValue)) {
+          if (isArray(cookieNameValue)) {
 
             try {
+
               cookieName  = decode(cookieNameValue[1]);
               cookieValue = decodeValue(cookieParts[i].substring(cookieNameValue[1].length + 1));
 
@@ -225,7 +212,8 @@
             }
 
           } else {
-            // means the cookie does not have an "=", so treat it as a boolean flag
+            // means the cookie does not have an "=", so treat it as a
+            // boolean flag
             cookieName = decode(cookieParts[i]);
             cookieValue = "";
           }
@@ -262,11 +250,11 @@
           converter;
 
       // if options is a function, then it's the converter
-      if (typeof (options) === "function") {
+      if (typeof options === "function") {
         converter = options;
         options = {};
 
-      } else if (typeof (options) === "object") {
+      } else if (typeof options === "object") {
         converter = options.converter;
 
       } else {
@@ -277,11 +265,11 @@
       cookie = cookies[name];
 
       // should return null, not undefined if the cookie doesn't exist
-      if (cookie === null || typeof (cookie) === "undefined") {
+      if (cookie === null || typeof cookie === "undefined") {
         return null;
       }
 
-      if (typeof (converter) === "function") {
+      if (typeof converter === "function") {
         return converter(cookie);
       }
 
@@ -303,15 +291,15 @@
         return null;
       }
 
-      if (typeof (subName) === "undefined" || subName === null) {
+      if (typeof subName === "undefined" || subName === null) {
         return null;
       }
 
-      if (hash[subName] === null || typeof (hash[subName]) === "undefined") {
+      if (hash[subName] === null || typeof hash[subName] === "undefined") {
         return null;
       }
 
-      if (typeof (converter) === "function") {
+      if (typeof converter === "function") {
         return converter(hash[subName]);
       }
 
@@ -328,7 +316,7 @@
 
       var cookies = this.parseCookieString(document.cookie, false);
 
-      if (typeof (cookies[name]) === "string") {
+      if (typeof cookies[name] === "string") {
         return this.parseCookieHash(cookies[name]);
       }
 
@@ -345,7 +333,7 @@
     remove: function (name, options) {
 
       // set options
-      options = this.merge(options || {}, {
+      options = merge(options || {}, {
         expires: new Date(0)
       });
 
@@ -364,11 +352,11 @@
      * @return {string}
      */
     removeSub: function (name, subName, options) {
-      if (typeof (name) === "undefined" || name === null) {
+      if (typeof name === "undefined" || name === null) {
         return "";
       }
 
-      if (typeof (subName) === "undefined" || subName === null) {
+      if (typeof subName === "undefined" || subName === null) {
         return "";
       }
 
@@ -378,7 +366,7 @@
       var subs = this.getSubs(name);
 
       // delete the indicated subcookie
-      if (typeof (subs) === "object" && subs.hasOwnProperty(subName)) {
+      if (typeof subs === "object" && subs.hasOwnProperty(subName)) {
         delete subs[subName];
 
         if (!options.removeIfEmpty) {
@@ -390,7 +378,7 @@
 
           // reset the cookie if there are subcookies left, else remove
           for (var key in subs) {
-            if (subs.hasOwnProperty(key) && !typeof subs[key] === "function" && !typeof subs[key] === "undefined") {
+            if (subs.hasOwnProperty(key) && typeof subs[key] !== "function" && typeof subs[key] !== "undefined") {
               return this.setSubs(name, subs, options);
             }
           }
@@ -433,18 +421,18 @@
      */
     setSub: function (name, subName, value, options) {
 
-      if (typeof (name) === "undefined" || typeof (subName) === "undefined") {
+      if (typeof name === "undefined" || typeof subName === "undefined") {
         return "";
       }
 
-      if (typeof (value) === "undefined") {
+      if (typeof value === "undefined") {
         //error("Cookie.setSub(): Subcookie value cannot be undefined.");
         value = "";
       }
 
       var hash = this.getSubs(name);
 
-      if (hash === null || typeof (hash) !== "object") {
+      if (hash === null || typeof hash !== "object") {
         hash = {};
       }
 
@@ -463,11 +451,11 @@
      */
     setSubs: function (name, value, options) {
 
-      if (name === null || typeof (name) === "undefined") {
+      if (name === null || typeof name === "undefined") {
         return "";
       }
 
-      if (value === null || typeof (value) === "undefined" || typeof (value) !== "object") {
+      if (value === null || typeof value === "undefined" || typeof value !== "object") {
         return "";
       }
 

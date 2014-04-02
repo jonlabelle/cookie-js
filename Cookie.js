@@ -13,7 +13,18 @@
  *
  * Date: Tue Apr 09 04:44:13 2013 -0500
  */
-(function (window, undefined) {
+(function (global, factory) {
+
+  'use strict';
+
+  if (typeof define === 'function' && define.amd) {
+    define(factory);
+  }
+  else {
+    global.Cookie = factory();
+  }
+
+})(this, function () {
 
   'use strict';
 
@@ -491,6 +502,6 @@
 
   };
 
-  window.Cookie = Cookie;
+  return Cookie;
 
-}(window));
+});

@@ -5,7 +5,7 @@ A tiny (1.24 KB gzipped), stand-alone JavaScript utility for managing cookies in
 
 ## Usage
 
-Add [Cookie.min.js](https://raw.github.com/jonlabelle/cookie-js/master/Cookie.min.js) to your HTML document.
+Add [Cookie.min.js](https://raw.githubusercontent.com/jonlabelle/cookie-js/master/Cookie.min.js) to your HTML document.
 
 ```html
 <script src="Cookie.min.js"></script>

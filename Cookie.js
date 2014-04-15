@@ -1,14 +1,13 @@
 /*
  * Cookie.js, v1.4.0
  *
- * Stand-alone JavaScript utility for managing Cookies in the Browser.
+ * A tiny (1.24 KB gzipped), stand-alone JavaScript utility for
+ * managing cookies in the browser.
  *
  * Copyright (c) 2014, Jon LaBelle (http://jonlabelle.com)
  * Licensed under MIT (http://creativecommons.org/licenses/MIT/)
- *
  * https://github.com/jonlabelle/cookie-js
  */
-
 (function (window, undefined) {
   "use strict";
 
@@ -57,8 +56,8 @@
   /**
    * Iterates over an object properties.
    *
-   * @param  {object}   obj      The object to iterate.
-   * @param  {function} callback The callback function.
+   * @param  {object}   obj
+   * @param  {function} callback
    */
 
   function objectEach(obj, callback) {
@@ -76,7 +75,7 @@
      *
      * @param  {string} name
      * @param  {string} value
-     * @param  {bool}   encodeValue Whether or not to encode the cookie values.
+     * @param  {bool}   encodeValue
      * @param  {object} options
      *
      * @return {string} the formatted cookie string.
@@ -168,7 +167,7 @@
      * Parses a cookie into an object representation.
      *
      * @param  {string} text
-     * @param  {bool}   shouldDecode Whether or not to decode the cookie values.
+     * @param  {bool}   shouldDecode
      * @oaram  {object} options
      *
      * @return {object}
@@ -194,7 +193,7 @@
                 cookieNameValue[1].length + 1));
             }
             catch (ex) {
-              // ignore cookie, the encoding is wrong.
+              // ignore... encoding is wrong.
             }
           }
           else {
@@ -486,7 +485,6 @@
         document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
       }
     }
-
   };
 
   window.Cookie = Cookie;

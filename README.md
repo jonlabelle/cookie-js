@@ -1,7 +1,7 @@
 Cookie.js
 =========
 
-Stand-alone JavaScript utility for managing cookies in the browser.
+A tiny (1.24 KB gzipped), stand-alone JavaScript utility for managing cookies in the browser.
 
 ## Usage
 

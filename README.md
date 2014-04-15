@@ -1,118 +1,117 @@
 Cookie.js
-=================
+=========
 
-Manage all your cookies and sub-cookies with Cookie.js. Cookie.js is a stand-alone script and does NOT require additional libraries (jQuery, YUI, etc.) to operate.
+Stand-alone JavaScript utility for managing cookies in the browser.
 
-Usage
------
+## Usage
 
 Add [Cookie.min.js](https://raw.github.com/jonlabelle/cookie-js/master/Cookie.min.js) to your HTML document.
 
 ```html
-<script type="text/javascript" src="Cookie.min.js"></script>
+<script src="Cookie.min.js"></script>
 ```
 
-Cookie.set()
-------------
+### Cookie.set()
 
-Create a cookie using the default options
+Create a cookie (with no options):
 
 ```javascript
-Cookie.set("firstname", "jon");
+Cookie.set("name", "jon");
 ```
 
-You can also set multiple cookies at once (chaining)
+> NOTE: If the `option.expires` value is not set, the cookie `Expires / Max-Age` is set to *Session*.
+
+Create a cookie with an expiration date:
 
 ```javascript
-Cookie.set("firstname", "jon").set("id", "1234");
-```
-
-#### Set the *expires* option
-
-```javascript
-Cookie.set("firstname", "jon", {
+Cookie.set("name", "jon", {
   expires: new Date("March 18, 2040")
 });
 ```
 
+Create a cookie that expires in 3 days:
+
 ```javascript
-Cookie.set("firstname", "jon", {
-  expires: 30 // expires in 30-days
+Cookie.set("name", "jon", {
+  expires: 3
 });
 ```
 
-The `expires` option can be a `Date` or a `Number` value type. If the `expires` option is NOT set, it will be a *session* cookie (expiring when the session ends).
-
-#### Set the *path* and *domain* options
+Create a cookie that can only be accessed by a specific `path` and `domain`:
 
 ```javascript
-Cookie.set("firstname", "jon", {
-  path: "/",
-  domain: ".jonlabelle.com"
+Cookie.set("name", "jon", {
+  path: "/", // all pages
+  domain: "jonlabelle.com" // any subdomain of jonlabelle.com, 
+                           // including www.jonlabelle.com
 });
 ```
 
-#### Set the *secure* option
+Create a secure cookie:
 
 ```javascript
-Cookie.set("secure_name", "jon", {
+Cookie.set("name", "jon", {
   secure: true
 });
 ```
 
-Setting the `secure` option to `true` ensures the cookie is always encrypted when transmitting from client to server.
+> NOTE: Setting the `secure` option to `true` ensures the cookie is always encrypted when transmitting from client to server.
 
-Cookie.get()
-------------
+### Cookie.get()
+
+Get a cookie accessible by the current page: 
 
 ```javascript
-Cookie.get("firstname");
+Cookie.get("name");
 ```
 
-Returns `null` if the cookie does NOT exist.
+> NOTE: Returns `null` if the cookie does NOT exist.
 
-#### Cookie exists
+### Cookie.exists()
+
+Check if a cookie exists:
 
 ```javascript
-if (Cookie.exists("firstname")) {
-  console.log('firstname cookie exists!');
+if (Cookie.exists("name")) {
+  // do cool stuff here
 }
 ```
 
-Returns `bool`, `true` if exists, `false` if the cookie does not exist.
+> Returns `bool`, `true` if the cookie exists, and `false` if it does not.
 
-#### Read cookie and type
+### Cookie Value Types
 
-The returned cookie value will be a number if the cookie exists (it will still be null if the cookie doesn't exist). Other native functions that convert values are `Boolean` and `Date`, or you can define your own conversion `function`.
+Retrieve a cookie and convert the value to `Number`:
 
 ```javascript
 Cookie.set("age", 34);
 
-var value = Cookie.get("age", Number);
+var val = Cookie.get("age", Number);
 
-if (typeof (value) === "number") {
-  console.log(value); // outputs 34
+if (typeof val === "number") {
+  console.log(val); // 34
 }
 ```
 
-Using a custom conversion function:
+Other native functions that convert values are `Boolean` and `Date`, or you can define your own conversion `Function`.
+
+For example, to create a number from a hexadecimal code:
 
 ```javascript
 var value = Cookie.get("code", function (stringValue) {
-  return parseInt(stringValue, 16); // create a number from a hexadecimal code
+  return parseInt(stringValue, 16);
 });
 ```
 
-Cookie.remove()
----------------
+### Cookie.remove()
 
-Delete the cookie named *code*
+Delete a cookie:
 
 ```javascript
-Cookie.remove("code");
+Cookie.remove("name");
 ```
 
-Delete the cookie named *info* on the *jonlabelle.com* domain
+Delete a cookie specifying the `domain`:
 
 ```javascript
 Cookie.remove("info", {
@@ -120,119 +119,93 @@ Cookie.remove("info", {
 });
 ```
 
-Delete a *secure* cookie
+### Cookie.setSub()
 
-```javascript
-Cookie.remove("username", {
-  secure: true
-});
+Sub-cookies allow multiple values to be stored in a single cookie. A sub-cookie looks similar to a URL and takes the following form:
+
+```
+cookiename=name1=value1&name2=value2&name3=value3
 ```
 
-Delete multiple cookies at the same time
+Create a sub-cookie named `person`:
 
 ```javascript
-Cookie.remove("username").remove("ident");
+Cookie.setSub("person", "name", "jon");
+Cookie.setSub("person", "email", "contact@jonlabelle.com");
+Cookie.setSub("person", "today", (new Date()).toString());
 ```
 
-Cookie.setSub()
----------------
+Create a sub-cookie with options:
 
 ```javascript
-Cookie.setSub("ident", "firstname", "jon");
+Cookie.setSub("person", "age", 75, { domain: "jonlabelle.com", secure: true });
 ```
 
-```javascript
-Cookie.setSub("ident", "lastname", "labelle");
-```
-
-#### Set sub-cookie options
+Create a sub-cookie from an `Object`:
 
 ```javascript
-Cookie.setSub("ident", "age", 22, {
-  domain: "jonlabelle.com"
-});
-```
-
-```javascript
-Cookie.setSub("ident", "firstname", "ace123", {
-  secure: true
-});
-```
-
-#### Set sub-cookie values with an *object*
-
-```javascript
-var subCookieData = {
-  firstname: "jon",
-  lastname: 'labelle',
-  age: 34,
-  ip: ::1
+var obj = {
+  name: "jon",
+  email: "labelle"
 };
+
+Cookie.setSubs("person", obj);
 ```
 
+> NOTE: Calls to `Cookie.setSubs()` will completely overwrite the cookie.
+
+### Cookie.getSub()
+
+Get a sub-cookie:
+
 ```javascript
-Cookie.setSubs("ident", subCookieData);
+Cookie.getSub("person", "name");
 ```
 
-NOTE: Calls to `Cookie.setSubs()` will always completely overwrite the cookie.
-
-Cookie.getSubs()
-----------------
+Get a sub-cookie and convert the value to a `Number`:
 
 ```javascript
-Cookie.getSub("indent", "firstname");
+Cookie.getSub("person", "age", Number);
 ```
 
-Get a sub-cookie value and convert it to `Number` value type.
+### Cookie.getSubs()
+
+Get a sub-cookie as a hash `Object`:
 
 ```javascript
-Cookie.getSub("ident", "age", Number);
-```
+var obj = Cookie.getSubs("person");
 
-Get sub-cookie data as object
-
-```javascript
-var obj = Cookie.getSubs("indent");
-
-if (typeof (obj) === "object") {
-  console.log(obj);
+if (typeof obj === "object") {
+  console.log(obj); // => Object { name: "jon", email: "..."}
 }
 ```
 
-Cookie.removeSub()
-------------------
+### Cookie.removeSub()
+
+Remove a sub-cookie:
 
 ```javascript
-// set it...
-Cookie.setSub("ident", "age", 22, {
-  domain: "jonlabelle.com"
-});
-
-// remove it
-Cookie.removeSub("ident", "age", {
-  domain: "jonlabelle.com"
-});
+Cookie.removeSub("person", "name");
 ```
 
-Remove all data in sub-cookie
+### Cookie.enabled()
 
-```javascript
-Cookie.remove("ident");
-```
-
-Cookie.enabled()
-----------------
-
-Check if cookies are enabled by the browser.
+Check if cookies are enabled by the browser:
 
 ```javascript
 Cookie.enabled();
 ```
 
-Returns `bool`, `true` if cookies are enabled, `false` if they are disabled.
+> Returns `bool`, `true` if cookies are enabled, and `false` if they are not.
 
-Feedback
---------
+### Cookie.clear()
 
-Jon LaBelle
-<contact@jonlabelle.com>
+Clears *all* cookies from the browser:
+
+```javascript
+Cookie.clear();
+```
+
+## Author
+
+- [Jon LaBelle](mailto:contact@jonlabelle.com)

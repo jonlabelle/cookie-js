@@ -1,128 +1,120 @@
 /*
- * Cookie.js v1.3
+ * Cookie.js, v1.4.0
  *
- * Manage all your cookies and sub-cookies with Cookie.js. Cookies.js is a
- * stand-alone script and does NOT require additional libraries (jQuery, YUI,
- * etc.) to operate.
+ * Stand-alone JavaScript utility for managing Cookies in the Browser.
  *
- * Copyright (c) 2013, Jon LaBelle
- * http://jonlabelle.com
+ * Copyright (c) 2014, Jon LaBelle (http://jonlabelle.com)
+ * Licensed under MIT (http://creativecommons.org/licenses/MIT/)
  *
- * Licensed under the MIT license:
- * http://creativecommons.org/licenses/MIT/
- *
- * Date: Tue Apr 09 04:44:13 2013 -0500
+ * https://github.com/jonlabelle/cookie-js
  */
-(function (window, undefined) {
 
-  'use strict';
+(function (window, undefined) {
+  "use strict";
 
   var encode = encodeURIComponent,
-      decode = decodeURIComponent;
+    decode = decodeURIComponent;
 
   /**
-   * Is Array
+   * Number type check.
    *
-   * @param  {mixed} obj Object to test.
+   * @param  {mixed}
+   *
    * @return {bool}
    */
-  function isArray(obj) {
-    return (typeof obj.length === "undefined") ? false : true;
-  }
 
-  /**
-   * Is Number check.
-   *
-   * @param  {mixed}  val The value to check.
-   * @return {bool}
-   */
-  function isNumeric (val) {
+  function isNumeric(val) {
     return !isNaN(parseFloat(val)) && isFinite(val);
   }
 
   /**
-   * Merges two objects.
+   * Merge two objects.
    *
-   * @param  {obj} original
-   * @param  {obj} newObject
-   * @return {obj} The combined merged objects.
+   * @param  {object} objOne
+   * @param  {object} objTwo
+   *
+   * @return {object}
    */
-  function merge (original, newObject) {
 
-    for (var key in newObject) {
-      if (newObject.hasOwnProperty(key)) {
-        var newPropertyValue = newObject[key];
-        var originalPropertyValue = original[key];
-      }
-
-      original[key] = (originalPropertyValue && typeof newPropertyValue === "object" && typeof originalPropertyValue === "object") ? merge(originalPropertyValue, newPropertyValue) : newPropertyValue;
+  function merge(objOne, objTwo) {
+    if (objOne instanceof Array) {
+      return objOne.concat(objTwo);
     }
 
-    return original;
+    var merged = {},
+      property;
+
+    for (property in objOne) {
+      merged[property] = objOne[property];
+    }
+    for (property in objTwo) {
+      merged[property] = objTwo[property];
+    }
+
+    return merged;
   }
 
   /**
-   * Iterate over an object.
+   * Iterates over an object properties.
    *
-   * @param  {obj}      obj      The object to iterate.
-   * @param  {Function} callback The callback function.
+   * @param  {object}   obj      The object to iterate.
+   * @param  {function} callback The callback function.
    */
-  function each (obj, callback) {
 
+  function objectEach(obj, callback) {
     for (var k in obj) {
       if (obj.hasOwnProperty(k)) {
         callback(k, obj[k]);
       }
     }
-
   }
 
   var Cookie = {
 
     /**
-     * Creates the cookie string.
+     * Creates a cookie string that can be assigned into document.cookie.
      *
      * @param  {string} name
      * @param  {string} value
-     * @param  {string} encodeValue Whether or not to encode the cookie values.
-     * @param  {obj}    options
-     * @return {string}
+     * @param  {bool}   encodeValue Whether or not to encode the cookie values.
+     * @param  {object} options
+     *
+     * @return {string} the formatted cookie string.
      */
     createCookieString: function (name, value, encodeValue, options) {
-
       options = options || {};
 
-      var text    = encode(name) + "=" + (encodeValue ? encode(value) : value),
-          expires = options.expires,
-          path    = options.path || "/",
-          domain  = options.domain;
+      var text = encode(name) + "=" + (encodeValue ? encode(value) : value),
+        expires = options.expires,
+        path = options.path || "/",
+        domain = options.domain;
 
-      // EXPIRATION AS DATE (if not set, cookie expires on session end)
-      if (expires instanceof Date) {
-        text += "; expires=" + expires.toUTCString();
+      if (typeof options === "object") {
+        // expire date
+        if (expires instanceof Date) {
+          text += "; expires=" + expires.toUTCString();
+        }
+        else if (isNumeric(expires)) {
+          // expire days (int)
+          var when = new Date();
+          when.setDate(when.getDate() + expires);
+          text += "; expires=" + when.toUTCString();
+        }
 
-      } else if (isNumeric(expires)) {
+        // path
+        if (typeof path === "string" && path !== "") {
+          text += "; path=" + path;
+        }
 
-        // EXPIRATION AS DAYS (int)
-        var days = expires;
-        var t = expires = new Date();
+        // domain
+        if (typeof domain === "string" && domain !== "") {
+          text += "; domain=" + domain;
+        }
 
-        t.setDate(t.getDate() + days);
-
-        text += "; expires=" + expires.toUTCString();
-      }
-
-      // PATH
-      text += "; path=" + path;
-
-      // DOMAIN
-      if (domain) {
-        text += "; domain=" + domain;
-      }
-
-      // SECURE
-      if (options.secure === true) {
-        text += "; secure";
+        // secure
+        if (options.secure === true) {
+          text += "; secure";
+        }
       }
 
       return text;
@@ -131,18 +123,17 @@
     /**
      * Creates a string from a hash/object.
      *
-     * @param  {obj} hash
+     * @param  {object} hash
+     *
      * @return {string}
      */
     createCookieHashString: function (hash) {
-
-      if (hash === null || typeof hash !== "object") {
+      if (typeof hash !== "object") {
         return "";
       }
 
       var text = [];
-
-      each(hash, function (key, value) {
+      objectEach(hash, function (key, value) {
         if (typeof value !== "function" && typeof value !== "undefined") {
           text.push(encode(key) + "=" + encode(String(value)));
         }
@@ -152,17 +143,16 @@
     },
 
     /**
-     * Parses a string into a hash object.
+     * Parses a cookie hash string into an object.
      *
-     * @access @internal
      * @param  {string} text
-     * @return {obj}
+     *
+     * @return {object}
      */
     parseCookieHash: function (text) {
-
       var hashParts = text.split("&"),
-          hashPart  = null,
-          hash      = {};
+        hashPart = null,
+        hash = {};
 
       if (text.length) {
         for (var i = 0, len = hashParts.length; i < len; i++) {
@@ -179,46 +169,49 @@
      *
      * @param  {string} text
      * @param  {bool}   shouldDecode Whether or not to decode the cookie values.
-     * @return {obj}
+     * @oaram  {object} options
+     *
+     * @return {object}
      */
-    parseCookieString: function (text, shouldDecode) {
-
+    parseCookieString: function (text, shouldDecode, options) {
       var cookies = {};
 
       if (typeof text === "string" && text.length > 0) {
-
         var decodeValue = (shouldDecode === false ? function (s) {
           return s;
         } : decode),
-          cookieParts     = text.split(/;\s/g),
-          cookieName      = null,
-          cookieValue     = null,
+          cookieParts = text.split(/;\s/g),
+          cookieName = null,
+          cookieValue = null,
           cookieNameValue = null;
 
         for (var i = 0, len = cookieParts.length; i < len; i++) {
-
-          // check for normally-formatted cookie (name-value)
           cookieNameValue = cookieParts[i].match(/([^=]+)=/i);
-
-          if (isArray(cookieNameValue)) {
-
+          if (cookieNameValue instanceof Array) {
             try {
-
-              cookieName  = decode(cookieNameValue[1]);
-              cookieValue = decodeValue(cookieParts[i].substring(cookieNameValue[1].length + 1));
-
-            } catch (ex) {
+              cookieName = decode(cookieNameValue[1]);
+              cookieValue = decodeValue(cookieParts[i].substring(
+                cookieNameValue[1].length + 1));
+            }
+            catch (ex) {
               // ignore cookie, the encoding is wrong.
             }
-
-          } else {
+          }
+          else {
             // means the cookie does not have an "=", so treat it as a
             // boolean flag
             cookieName = decode(cookieParts[i]);
             cookieValue = "";
           }
-
-          cookies[cookieName] = cookieValue;
+          // don't overwrite an already loaded cookie if set by option
+          if (typeof options !== "undefined" && options.reverseCookieLoading) {
+            if (typeof cookies[cookieName] === "undefined") {
+              cookies[cookieName] = cookieValue;
+            }
+          }
+          else {
+            cookies[cookieName] = cookieValue;
+          }
         }
       }
 
@@ -226,46 +219,50 @@
     },
 
     /**
-     * Checks whether the cookie exists.
+     * Determines if the cookie with the given name exists.
      *
      * @param  {string} name
+     *
      * @return {bool}
      */
     exists: function (name) {
+      if (typeof name !== "string" || typeof name === "") {
+        return false;
+      }
       var cookies = this.parseCookieString(document.cookie, true);
       return cookies.hasOwnProperty(name);
     },
 
     /**
-     * Get cookie.
+     * Gets the cookie value for the given name.
      *
      * @param  {string} name
-     * @param  {obj} options
+     * @param  {object} options
+     *
      * @return {mixed}
      */
     get: function (name, options) {
-
       var cookies,
-          cookie,
-          converter;
+        cookie,
+        converter;
 
       // if options is a function, then it's the converter
       if (typeof options === "function") {
         converter = options;
         options = {};
-
-      } else if (typeof options === "object") {
+      }
+      else if (typeof options === "object") {
         converter = options.converter;
-
-      } else {
+      }
+      else {
         options = {};
       }
 
-      cookies = this.parseCookieString(document.cookie, !options.raw);
+      cookies = this.parseCookieString(document.cookie, !options.raw, options);
       cookie = cookies[name];
 
       // should return null, not undefined if the cookie doesn't exist
-      if (cookie === null || typeof cookie === "undefined") {
+      if (typeof cookie === "undefined") {
         return null;
       }
 
@@ -277,25 +274,26 @@
     },
 
     /**
-     * Get sub-cookie.
+     * Returns the value of a sub-cookie.
      *
      * @param  {string}   name
      * @param  {string}   subName
      * @param  {function} converter
-     * @return {string}
+     * @param  {object}   options
+     *
+     * @return {mixed}
      */
-    getSub: function (name, subName, converter) {
-      var hash = this.getSubs(name);
+    getSub: function (name, subName, converter, options) {
+      var hash = this.getSubs(name, options);
 
       if (hash === null) {
         return null;
       }
-
-      if (typeof subName === "undefined" || subName === null) {
+      if (typeof subName !== "string" || typeof subName === "") {
         return null;
       }
 
-      if (hash[subName] === null || typeof hash[subName] === "undefined") {
+      if (typeof hash[subName] === "undefined") {
         return null;
       }
 
@@ -310,16 +308,15 @@
      * Gets sub-cookie as a hash object.
      *
      * @param  {string} name
-     * @return {obj}
+     * @param  {object} options
+     *
+     * @return {object}
      */
-    getSubs: function (name) {
-
-      var cookies = this.parseCookieString(document.cookie, false);
-
+    getSubs: function (name, options) {
+      var cookies = this.parseCookieString(document.cookie, false, options);
       if (typeof cookies[name] === "string") {
         return this.parseCookieHash(cookies[name]);
       }
-
       return null;
     },
 
@@ -327,36 +324,36 @@
      * Removes the cookie.
      *
      * @param  {string} name
-     * @param  {obj} options
-     * @return {string}
+     * @param  {object} options
+     *
+     * @return {string} the created cookie string.
      */
     remove: function (name, options) {
+      if (typeof name !== "string" || typeof name === "") {
+        return "";
+      }
 
-      // set options
       options = merge(options || {}, {
         expires: new Date(0)
       });
 
-      // set cookie
-      this.set(name, "", options);
-
-      return this;
+      return this.set(name, "", options);
     },
 
     /**
-     * Remove a sub-cookie.
+     * Removes a sub-cookie with a given name.
      *
      * @param  {string} name
      * @param  {string} subName
-     * @param  {obj} options
-     * @return {string}
+     * @param  {object} options
+     *
+     * @return {string} the created cookie string.
      */
     removeSub: function (name, subName, options) {
-      if (typeof name === "undefined" || name === null) {
+      if (typeof name !== "string" || typeof name === "") {
         return "";
       }
-
-      if (typeof subName === "undefined" || subName === null) {
+      if (typeof subName !== "string" || typeof subName === "") {
         return "";
       }
 
@@ -368,39 +365,41 @@
       // delete the indicated subcookie
       if (typeof subs === "object" && subs.hasOwnProperty(subName)) {
         delete subs[subName];
-
         if (!options.removeIfEmpty) {
-
-          // reset the cookie
-          return this.setSubs(name, subs, options);
-
-        } else {
-
+          return this.setSubs(name, subs, options); // reset the cookie
+        }
+        else {
           // reset the cookie if there are subcookies left, else remove
           for (var key in subs) {
-            if (subs.hasOwnProperty(key) && typeof subs[key] !== "function" && typeof subs[key] !== "undefined") {
+            if (subs.hasOwnProperty(key) && typeof subs[key] !== "function" &&
+              typeof subs[key] !== "undefined") {
               return this.setSubs(name, subs, options);
             }
           }
-
           return this.remove(name, options);
         }
 
-      } else {
+      }
+      else {
         return "";
       }
     },
 
     /**
-     * Set a cookie.
+     * Sets a cookie with a given name and value.
      *
      * @param {string} name
-     * @param {string|int} value
-     * @param {obj} options
+     * @param {mixed}  value
+     * @param {object} options
+     *
+     * @return {string} the created cookie string.
      */
     set: function (name, value, options) {
+      if (typeof name !== "string" || typeof name === "") {
+        return null;
+      }
       if (typeof value === "undefined") {
-        value = "";
+        return null;
       }
 
       options = options || {};
@@ -408,85 +407,84 @@
       var text = this.createCookieString(name, value, !options.raw, options);
       document.cookie = text;
 
-      return this;
+      return text;
     },
 
     /**
      * Set a sub-cookie.
      *
-     * @param {string} name
-     * @param {string} subName
+     * @param {string}     name
+     * @param {string}     subName
      * @param {string|int} value
-     * @param {obj} options
+     * @param {object}     options
+     *
+     * @return {string} the created cookie string.
      */
     setSub: function (name, subName, value, options) {
-
-      if (typeof name === "undefined" || typeof subName === "undefined") {
+      if (typeof name !== "string" || typeof name === "") {
+        return "";
+      }
+      if (typeof subName !== "string" || typeof subName === "") {
+        return "";
+      }
+      if (typeof value === "undefined") {
         return "";
       }
 
-      if (typeof value === "undefined") {
-        //error("Cookie.setSub(): Subcookie value cannot be undefined.");
-        value = "";
-      }
-
       var hash = this.getSubs(name);
-
-      if (hash === null || typeof hash !== "object") {
+      if (!hash) {
         hash = {};
       }
 
       hash[subName] = value;
 
-
       return this.setSubs(name, hash, options);
     },
 
     /**
-     * Sets a sub-cookies.
+     * Set sub-cookies.
      *
      * @param {string} name
-     * @param {obj} value
-     * @param {obj} options
+     * @param {object} value
+     * @param {object} options
+     *
+     * @return {string} the created cookie string.
      */
     setSubs: function (name, value, options) {
-
-      if (name === null || typeof name === "undefined") {
+      if (typeof name !== "string" || typeof name === "") {
+        return "";
+      }
+      if (typeof value !== "object") {
         return "";
       }
 
-      if (value === null || typeof value === "undefined" || typeof value !== "object") {
-        return "";
-      }
-
-      var text = this.createCookieString(name, this.createCookieHashString(value), false, options);
+      var text = this.createCookieString(name, this.createCookieHashString(
+        value), false, options);
       document.cookie = text;
 
       return text;
     },
 
     /**
-     * Checks whether cookies are enabled by the browser.
+     * Check whether cookies are enabled by the browser.
      *
      * @return {bool}
      */
     enabled: function () {
+      return navigator.cookieEnabled;
+    },
 
-      var key = "jUQFUy5j3vHnA14R",
-          val = "cookieMonster";
-
-      var cookieEnabled = (navigator.cookieEnabled) ? true : false;
-
-      if (typeof navigator.cookieEnabled === "undefined" && !cookieEnabled) {
-        this.set(key, val);
-        cookieEnabled = this.exists(key);
+    /**
+     * Clears all cookies.
+     */
+    clear: function () {
+      var cookies = document.cookie.split(";");
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i];
+        var position = cookie.indexOf("=");
+        var name = position > -1 ? cookie.substr(0, position) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
       }
-
-      if (cookieEnabled) {
-        this.remove(key);
-      }
-
-      return cookieEnabled;
     }
 
   };

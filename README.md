@@ -11,12 +11,14 @@ Add [Cookie.min.js](https://raw.githubusercontent.com/jonlabelle/cookie-js/maste
 <script src="Cookie.min.js"></script>
 ```
 
+## API
+
 ### Cookie.set()
 
 Create a cookie (with no options):
 
 ```javascript
-Cookie.set("name", "jon");
+Cookie.set('name', 'jon');
 ```
 
 > NOTE: If the `option.expires` value is not set, the cookie `Expires / Max-Age` is set to *Session*.
@@ -24,15 +26,15 @@ Cookie.set("name", "jon");
 Create a cookie with an expiration date:
 
 ```javascript
-Cookie.set("name", "jon", {
-  expires: new Date("March 18, 2040")
+Cookie.set('name', 'jon', {
+  expires: new Date('March 18, 2040')
 });
 ```
 
 Create a cookie that expires in 3 days:
 
 ```javascript
-Cookie.set("name", "jon", {
+Cookie.set('name', 'jon', {
   expires: 3
 });
 ```
@@ -40,17 +42,16 @@ Cookie.set("name", "jon", {
 Create a cookie that can only be accessed by a specific `path` and `domain`:
 
 ```javascript
-Cookie.set("name", "jon", {
-  path: "/", // all pages
-  domain: "jonlabelle.com" // any subdomain of jonlabelle.com, 
-                           // including www.jonlabelle.com
+Cookie.set('name', 'jon', {
+  path: '/', // all pages
+  domain: 'jonlabelle.com' // any subdomain of jonlabelle.com (including www)
 });
 ```
 
 Create a secure cookie:
 
 ```javascript
-Cookie.set("name", "jon", {
+Cookie.set('name', 'jon', {
   secure: true
 });
 ```
@@ -62,7 +63,7 @@ Cookie.set("name", "jon", {
 Get a cookie accessible by the current page: 
 
 ```javascript
-Cookie.get("name");
+Cookie.get('name');
 ```
 
 > NOTE: Returns `null` if the cookie does NOT exist.
@@ -72,7 +73,7 @@ Cookie.get("name");
 Check if a cookie exists:
 
 ```javascript
-if (Cookie.exists("name")) {
+if (Cookie.exists('name')) {
   // do cool stuff here
 }
 ```
@@ -84,11 +85,11 @@ if (Cookie.exists("name")) {
 Retrieve a cookie and convert the value to `Number`:
 
 ```javascript
-Cookie.set("age", 34);
+Cookie.set('age', 34);
 
-var val = Cookie.get("age", Number);
+var val = Cookie.get('age', Number);
 
-if (typeof val === "number") {
+if (typeof val === 'number') {
   console.log(val); // 34
 }
 ```
@@ -98,7 +99,7 @@ Other native functions that convert values are `Boolean` and `Date`, or you can 
 For example, to create a number from a hexadecimal code:
 
 ```javascript
-var value = Cookie.get("code", function (stringValue) {
+var value = Cookie.get('code', function (stringValue) {
   return parseInt(stringValue, 16);
 });
 ```
@@ -108,14 +109,14 @@ var value = Cookie.get("code", function (stringValue) {
 Delete a cookie:
 
 ```javascript
-Cookie.remove("name");
+Cookie.remove('name');
 ```
 
 Delete a cookie specifying the `domain`:
 
 ```javascript
-Cookie.remove("info", {
-  domain: "jonlabelle.com"
+Cookie.remove('info', {
+  domain: 'jonlabelle.com'
 });
 ```
 
@@ -123,33 +124,31 @@ Cookie.remove("info", {
 
 Sub-cookies allow multiple values to be stored in a single cookie. A sub-cookie looks similar to a URL and takes the following form:
 
-```
-cookiename=name1=value1&name2=value2&name3=value3
-```
+  cookiename=name1=value1&name2=value2&name3=value3
 
 Create a sub-cookie named `person`:
 
 ```javascript
-Cookie.setSub("person", "name", "jon");
-Cookie.setSub("person", "email", "contact@jonlabelle.com");
-Cookie.setSub("person", "today", (new Date()).toString());
+Cookie.setSub('person', 'name', 'jon');
+Cookie.setSub('person', 'email', 'contact@jonlabelle.com');
+Cookie.setSub('person', 'today', (new Date()).toString());
 ```
 
 Create a sub-cookie with options:
 
 ```javascript
-Cookie.setSub("person", "age", 75, { domain: "jonlabelle.com", secure: true });
+Cookie.setSub('person', 'age', 75, { domain: 'jonlabelle.com', secure: true });
 ```
 
 Create a sub-cookie from an `Object`:
 
 ```javascript
 var obj = {
-  name: "jon",
-  email: "labelle"
+  name: 'jon',
+  email: 'labelle'
 };
 
-Cookie.setSubs("person", obj);
+Cookie.setSubs('person', obj);
 ```
 
 > NOTE: Calls to `Cookie.setSubs()` will completely overwrite the cookie.
@@ -159,13 +158,13 @@ Cookie.setSubs("person", obj);
 Get a sub-cookie:
 
 ```javascript
-Cookie.getSub("person", "name");
+Cookie.getSub('person', 'name');
 ```
 
 Get a sub-cookie and convert the value to a `Number`:
 
 ```javascript
-Cookie.getSub("person", "age", Number);
+Cookie.getSub('person', 'age', Number);
 ```
 
 ### Cookie.getSubs()
@@ -173,10 +172,10 @@ Cookie.getSub("person", "age", Number);
 Get a sub-cookie as a hash `Object`:
 
 ```javascript
-var obj = Cookie.getSubs("person");
+var obj = Cookie.getSubs('person');
 
-if (typeof obj === "object") {
-  console.log(obj); // => Object { name: "jon", email: "..."}
+if (typeof obj === 'object') {
+  console.log(obj); // => Object { name: 'jon', email: '...'}
 }
 ```
 
@@ -185,7 +184,7 @@ if (typeof obj === "object") {
 Remove a sub-cookie:
 
 ```javascript
-Cookie.removeSub("person", "name");
+Cookie.removeSub('person', 'name');
 ```
 
 ### Cookie.enabled()
@@ -209,3 +208,27 @@ Cookie.clear();
 ## Author
 
 - [Jon LaBelle](mailto:contact@jonlabelle.com)
+
+## License
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Jon LaBelle
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.

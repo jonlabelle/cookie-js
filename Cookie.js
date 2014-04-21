@@ -1,12 +1,12 @@
-/*
- * Cookie.js, v1.4.0
+/*!
+ * Cookie.js v1.4.0
+ * https://github.com/jonlabelle/cookie-js
  *
  * A tiny (1.24 KB gzipped), stand-alone JavaScript utility for
  * managing cookies in the browser.
  *
- * Copyright (c) 2014, Jon LaBelle (http://jonlabelle.com)
+ * Copyright (c) 2012-2014 Jon LaBelle
  * Licensed under MIT (http://creativecommons.org/licenses/MIT/)
- * https://github.com/jonlabelle/cookie-js
  */
 (function (window, undefined) {
   "use strict";

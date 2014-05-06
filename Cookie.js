@@ -44,10 +44,14 @@
       property;
 
     for (property in objOne) {
+      if (objOne.hasOwnProperty(property)) {
       merged[property] = objOne[property];
     }
+    }
     for (property in objTwo) {
+      if (objTwo.hasOwnProperty(property)) {
       merged[property] = objTwo[property];
+    }
     }
 
     return merged;
@@ -61,9 +65,9 @@
    */
 
   function objectEach(obj, callback) {
-    for (var k in obj) {
-      if (obj.hasOwnProperty(k)) {
-        callback(k, obj[k]);
+    for (var property in obj) {
+      if (obj.hasOwnProperty(property)) {
+	callback(property, obj[property]);
       }
     }
   }

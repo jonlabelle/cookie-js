@@ -45,13 +45,13 @@
 
     for (property in objOne) {
       if (objOne.hasOwnProperty(property)) {
-      merged[property] = objOne[property];
-    }
+        merged[property] = objOne[property];
+      }
     }
     for (property in objTwo) {
       if (objTwo.hasOwnProperty(property)) {
-      merged[property] = objTwo[property];
-    }
+        merged[property] = objTwo[property];
+      }
     }
 
     return merged;
@@ -67,7 +67,7 @@
   function objectEach(obj, callback) {
     for (var property in obj) {
       if (obj.hasOwnProperty(property)) {
-	callback(property, obj[property]);
+        callback(property, obj[property]);
       }
     }
   }
@@ -229,7 +229,7 @@
      * @return {bool}
      */
     exists: function (name) {
-      if (typeof name !== "string" || typeof name === "") {
+      if (typeof name !== "string" || name === "") {
         return false;
       }
       var cookies = this.parseCookieString(document.cookie, true);
@@ -292,7 +292,7 @@
       if (hash === null) {
         return null;
       }
-      if (typeof subName !== "string" || typeof subName === "") {
+      if (typeof subName !== "string" || subName === "") {
         return null;
       }
 
@@ -332,7 +332,7 @@
      * @return {string} the created cookie string.
      */
     remove: function (name, options) {
-      if (typeof name !== "string" || typeof name === "") {
+      if (typeof name !== "string" || name === "") {
         return "";
       }
 
@@ -353,10 +353,10 @@
      * @return {string} the created cookie string.
      */
     removeSub: function (name, subName, options) {
-      if (typeof name !== "string" || typeof name === "") {
+      if (typeof name !== "string" || name === "") {
         return "";
       }
-      if (typeof subName !== "string" || typeof subName === "") {
+      if (typeof subName !== "string" || subName === "") {
         return "";
       }
 
@@ -398,7 +398,7 @@
      * @return {string} the created cookie string.
      */
     set: function (name, value, options) {
-      if (typeof name !== "string" || typeof name === "") {
+      if (typeof name !== "string" || name === "") {
         return null;
       }
       if (typeof value === "undefined") {
@@ -424,10 +424,10 @@
      * @return {string} the created cookie string.
      */
     setSub: function (name, subName, value, options) {
-      if (typeof name !== "string" || typeof name === "") {
+      if (typeof name !== "string" || name === "") {
         return "";
       }
-      if (typeof subName !== "string" || typeof subName === "") {
+      if (typeof subName !== "string" || subName === "") {
         return "";
       }
       if (typeof value === "undefined") {
@@ -454,7 +454,7 @@
      * @return {string} the created cookie string.
      */
     setSubs: function (name, value, options) {
-      if (typeof name !== "string" || typeof name === "") {
+      if (typeof name !== "string" || name === "") {
         return "";
       }
       if (typeof value !== "object") {

@@ -4,7 +4,7 @@
  * A tiny (1.24 KB gzipped), stand-alone JavaScript utility for
  * managing cookies in the browser.
  *
- * Copyright (c) 2012-2015 Jon LaBelle
+ * Copyright (c) 2012-2016 Jon LaBelle
  * Licensed under MIT (http://creativecommons.org/licenses/MIT/)
  * https://github.com/jonlabelle/cookie-js
  */
@@ -25,13 +25,13 @@
     }
 
     /**
-     * Merge two objects.
+     * Merges two objects.
      *
      * @param  {object} objOne
      * @param  {object} objTwo
      * @return {object}
      */
-    function merge(objOne, objTwo) {
+    function mergeObjects(objOne, objTwo) {
         if (objOne instanceof Array) {
             return objOne.concat(objTwo);
         }
@@ -44,6 +44,7 @@
                 merged[property] = objOne[property];
             }
         }
+
         for (property in objTwo) {
             if (objTwo.hasOwnProperty(property)) {
                 merged[property] = objTwo[property];
@@ -59,7 +60,7 @@
      * @param  {object}   obj
      * @param  {function} callback
      */
-    function objectEach(obj, callback) {
+    function objectForEach(obj, callback) {
         for (var property in obj) {
             if (obj.hasOwnProperty(property)) {
                 callback(property, obj[property]);
@@ -76,7 +77,7 @@
          * @param  {string} value
          * @param  {bool}   encodeValue
          * @param  {object} options
-         * @return {string} the formatted cookie string.
+         * @return {string} The formatted cookie string.
          */
         createCookieString: function (name, value, encodeValue, options) {
             options = options || {};
@@ -90,8 +91,7 @@
                 // expire date
                 if (expires instanceof Date) {
                     text += "; expires=" + expires.toUTCString();
-                }
-                else if (isNumeric(expires)) {
+                } else if (isNumeric(expires)) {
                     // expire days (int)
                     var when = new Date();
                     when.setDate(when.getDate() + expires);
@@ -129,7 +129,8 @@
             }
 
             var text = [];
-            objectEach(hash, function (key, value) {
+
+            objectForEach(hash, function (key, value) {
                 if (typeof value !== "function" && typeof value !== "undefined") {
                     text.push(encode(key) + "=" + encode(String(value)));
                 }
@@ -186,12 +187,10 @@
                             cookieName = decode(cookieNameValue[1]);
                             cookieValue = decodeValue(cookieParts[i].substring(
                                 cookieNameValue[1].length + 1));
-                        }
-                        catch (ex) {
+                        } catch (ex) {
                             // ignore... encoding is wrong.
                         }
-                    }
-                    else {
+                    } else {
                         // means the cookie does not have an "=", so treat it as a
                         // boolean flag
                         cookieName = decode(cookieParts[i]);
@@ -202,8 +201,7 @@
                         if (typeof cookies[cookieName] === "undefined") {
                             cookies[cookieName] = cookieValue;
                         }
-                    }
-                    else {
+                    } else {
                         cookies[cookieName] = cookieValue;
                     }
                 }
@@ -222,7 +220,9 @@
             if (typeof name !== "string" || name === "") {
                 return false;
             }
+
             var cookies = this.parseCookieString(document.cookie, true);
+
             return cookies.hasOwnProperty(name);
         },
 
@@ -242,11 +242,9 @@
             if (typeof options === "function") {
                 converter = options;
                 options = {};
-            }
-            else if (typeof options === "object") {
+            } else if (typeof options === "object") {
                 converter = options.converter;
-            }
-            else {
+            } else {
                 options = {};
             }
 
@@ -280,6 +278,7 @@
             if (hash === null) {
                 return null;
             }
+
             if (typeof subName !== "string" || subName === "") {
                 return null;
             }
@@ -304,9 +303,11 @@
          */
         getSubs: function (name, options) {
             var cookies = this.parseCookieString(document.cookie, false, options);
+
             if (typeof cookies[name] === "string") {
                 return this.parseCookieHash(cookies[name]);
             }
+
             return null;
         },
 
@@ -322,7 +323,7 @@
                 return "";
             }
 
-            options = merge(options || {}, {
+            options = mergeObjects(options || {}, {
                 expires: new Date(0)
             });
 
@@ -341,6 +342,7 @@
             if (typeof name !== "string" || name === "") {
                 return "";
             }
+
             if (typeof subName !== "string" || subName === "") {
                 return "";
             }
@@ -355,8 +357,7 @@
                 delete subs[subName];
                 if (!options.removeIfEmpty) {
                     return this.setSubs(name, subs, options); // reset the cookie
-                }
-                else {
+                } else {
                     // reset the cookie if there are subcookies left, else remove
                     for (var key in subs) {
                         if (subs.hasOwnProperty(key) && typeof subs[key] !== "function" &&
@@ -366,9 +367,7 @@
                     }
                     return this.remove(name, options);
                 }
-
-            }
-            else {
+            } else {
                 return "";
             }
         },
@@ -386,6 +385,7 @@
             if (typeof name !== "string" || name === "") {
                 return null;
             }
+
             if (typeof value === "undefined") {
                 return null;
             }
@@ -405,15 +405,17 @@
          * @param {string}     subName
          * @param {string|int} value
          * @param {object}     options
-         * @return {string} the created cookie string.
+         * @return {string} The created cookie string.
          */
         setSub: function (name, subName, value, options) {
             if (typeof name !== "string" || name === "") {
                 return "";
             }
+
             if (typeof subName !== "string" || subName === "") {
                 return "";
             }
+
             if (typeof value === "undefined") {
                 return "";
             }
@@ -440,12 +442,18 @@
             if (typeof name !== "string" || name === "") {
                 return "";
             }
+
             if (typeof value !== "object") {
                 return "";
             }
 
-            var text = this.createCookieString(name, this.createCookieHashString(
-                value), false, options);
+            var text = this.createCookieString(
+                name,
+                this.createCookieHashString(value),
+                false,
+                options
+            );
+
             document.cookie = text;
 
             return text;
@@ -477,3 +485,4 @@
     window.Cookie = Cookie;
 
 }(window));
+

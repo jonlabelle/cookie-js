@@ -29,6 +29,7 @@
      *
      * @param  {object} objOne
      * @param  {object} objTwo
+     *
      * @return {object}
      */
     function mergeObjects(objOne, objTwo) {
@@ -77,6 +78,7 @@
          * @param  {string} value
          * @param  {bool}   encodeValue
          * @param  {object} options
+         *
          * @return {string} The formatted cookie string.
          */
         createCookieString: function (name, value, encodeValue, options) {
@@ -121,6 +123,7 @@
          * Creates a string from a hash/object.
          *
          * @param  {object} hash
+         *
          * @return {string}
          */
         createCookieHashString: function (hash) {
@@ -143,6 +146,7 @@
          * Parses a cookie hash string into an object.
          *
          * @param  {string} text
+         *
          * @return {object}
          */
         parseCookieHash: function (text) {
@@ -166,6 +170,7 @@
          * @param  {string} text
          * @param  {bool}   shouldDecode
          * @oaram  {object} options
+         *
          * @return {object}
          */
         parseCookieString: function (text, shouldDecode, options) {
@@ -214,6 +219,7 @@
          * Determines if the cookie with the given name exists.
          *
          * @param  {string} name
+         *
          * @return {bool}
          */
         exists: function (name) {
@@ -231,6 +237,7 @@
          *
          * @param  {string} name
          * @param  {object} options
+         *
          * @return {mixed}
          */
         get: function (name, options) {
@@ -270,6 +277,7 @@
          * @param  {string}   subName
          * @param  {function} converter
          * @param  {object}   options
+         *
          * @return {mixed}
          */
         getSub: function (name, subName, converter, options) {
@@ -299,6 +307,7 @@
          *
          * @param  {string} name
          * @param  {object} options
+         *
          * @return {object}
          */
         getSubs: function (name, options) {
@@ -316,6 +325,7 @@
          *
          * @param  {string} name
          * @param  {object} options
+         *
          * @return {string} the created cookie string.
          */
         remove: function (name, options) {
@@ -336,6 +346,7 @@
          * @param  {string} name
          * @param  {string} subName
          * @param  {object} options
+         *
          * @return {string} the created cookie string.
          */
         removeSub: function (name, subName, options) {
@@ -405,6 +416,7 @@
          * @param {string}     subName
          * @param {string|int} value
          * @param {object}     options
+         *
          * @return {string} The created cookie string.
          */
         setSub: function (name, subName, value, options) {
@@ -436,6 +448,7 @@
          * @param {string} name
          * @param {object} value
          * @param {object} options
+         *
          * @return {string} the created cookie string.
          */
         setSubs: function (name, value, options) {
@@ -485,4 +498,3 @@
     window.Cookie = Cookie;
 
 }(window));
-

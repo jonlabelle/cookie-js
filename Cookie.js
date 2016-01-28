@@ -169,7 +169,7 @@
          *
          * @param  {string} text
          * @param  {bool}   shouldDecode
-         * @oaram  {object} options
+         * @param  {object} options
          *
          * @return {object}
          */

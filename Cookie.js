@@ -15,10 +15,11 @@
         decode = decodeURIComponent;
 
     /**
-     * Number type check.
+     * Determines if the value's type is a number.
      *
-     * @param  {mixed}
-     * @return {bool}
+     * @param  {Any}
+     *
+     * @return {Boolean}
      */
     function isNumeric(val) {
         return !isNaN(parseFloat(val)) && isFinite(val);
@@ -27,10 +28,10 @@
     /**
      * Merges two objects.
      *
-     * @param  {object} objOne
-     * @param  {object} objTwo
+     * @param  {Object} objOne
+     * @param  {Object} objTwo
      *
-     * @return {object}
+     * @return {Object}
      */
     function mergeObjects(objOne, objTwo) {
         if (objOne instanceof Array) {
@@ -56,10 +57,11 @@
     }
 
     /**
-     * Iterates over an object properties.
+     * Iterates over an object's properties and applies a callback
+     * function.
      *
-     * @param  {object}   obj
-     * @param  {function} callback
+     * @param  {Object}   obj The object to iterate over.
+     * @param  {function} callback The callback function to
      */
     function objectForEach(obj, callback) {
         for (var property in obj) {
@@ -74,12 +76,13 @@
         /**
          * Creates a cookie string that can be assigned into document.cookie.
          *
-         * @param  {string} name
-         * @param  {string} value
-         * @param  {bool}   encodeValue
-         * @param  {object} options
+         * @param  {String}  name The name of the cookie.
+         * @param  {String}  value The value of the cookie.
+         * @param  {Boolean} encodeValue True to encode the value, false to
+         *     leave as-is.
+         * @param  {Object}  options (Optional) Options for the cookie.
          *
-         * @return {string} The formatted cookie string.
+         * @return {String} The formatted cookie string.
          */
         createCookieString: function (name, value, encodeValue, options) {
             options = options || {};
@@ -122,9 +125,10 @@
         /**
          * Creates a string from a hash/object.
          *
-         * @param  {object} hash
+         * @param  {Object} hash An object of key-value pairs to create a string
+         *     for.
          *
-         * @return {string}
+         * @return {String} A string suitable for use as a cookie value.
          */
         createCookieHashString: function (hash) {
             if (typeof hash !== "object") {
@@ -145,9 +149,10 @@
         /**
          * Parses a cookie hash string into an object.
          *
-         * @param  {string} text
+         * @param {String} text The cookie hash string to parse (format:
+         *     n1=v1&n2=v2).
          *
-         * @return {object}
+         * @return {Object} An object containing entries for each cookie value.
          */
         parseCookieHash: function (text) {
             var hashParts = text.split("&"),
@@ -165,13 +170,16 @@
         },
 
         /**
-         * Parses a cookie into an object representation.
+         * Parses a cookie string into an object representing all accessible
+         * cookies.
          *
-         * @param  {string} text
-         * @param  {bool}   shouldDecode
-         * @param  {object} options
+         * @param {String} text The cookie string to parse.
+         * @param {Boolean} shouldDecode (Optional) Indicates if the cookie
+         *     values should be decoded or not. Default is true.
+         * @param {Object} options (Optional) Contains settings for loading the
+         *     cookie.
          *
-         * @return {object}
+         * @return {Object}
          */
         parseCookieString: function (text, shouldDecode, options) {
             var cookies = {};
@@ -216,11 +224,13 @@
         },
 
         /**
-         * Determines if the cookie with the given name exists.
+         * Determines if the cookie with the given name exists. This is useful
+         * for Boolean cookies (those that do not follow the name=value
+         * convention).
          *
-         * @param  {string} name
+         * @param {String} name The name of the cookie to check.
          *
-         * @return {bool}
+         * @return {Boolean} True if the cookie exists, false if not.
          */
         exists: function (name) {
             if (typeof name !== "string" || name === "") {
@@ -233,12 +243,21 @@
         },
 
         /**
-         * Gets the cookie value for the given name.
+         * Returns the cookie value for the given name.
          *
-         * @param  {string} name
-         * @param  {object} options
+         * @param {String} name The name of the cookie to retrieve.
+         * @param {Function|Object} options (Optional) An object containing one
+         *      or more cookie options: raw (true/false), reverseCookieLoading
+         *      (true/false) and converter (a function). The converter function
+         *      is run on the value before returning it. The function is not
+         *      used if the cookie doesn't exist. The function can be passed
+         *      instead of the options object for backwards compatibility. When
+         *      raw is set to true, the cookie value is not URI decoded.
          *
-         * @return {mixed}
+         * @return {Any} If no converter is specified, returns a string or null
+         *      if the cookie doesn't exist. If the converter is specified,
+         *      returns the value returned from the converter or null if the
+         *      cookie doesn't exist.
          */
         get: function (name, options) {
             var cookies,
@@ -273,12 +292,21 @@
         /**
          * Returns the value of a sub-cookie.
          *
-         * @param  {string}   name
-         * @param  {string}   subName
-         * @param  {function} converter
-         * @param  {object}   options
+         * @param {String} name The name of the cookie to retrieve.
+         * @param {String} subName The name of the sub-cookie to retrieve.
+         * @param {Function} converter (Optional) A function to run on the value
+         *      before returning it. The function is not used if the cookie
+         *      doesn't exist.
+         * @param {Object} options (Optional) Containing one or more settings
+         *     for cookie parsing.
          *
-         * @return {mixed}
+         * @return {Any} If the cookie doesn't exist, null is returned. If the
+         *      sub-cookie doesn't exist, null if also returned. If no converter
+         *      is specified and the sub-cookie exists, a string is returned. If
+         *      a converter is specified and the sub-cookie exists, the value
+         *      returned from the converter is returned.
+         *
+         * @return {Any}
          */
         getSub: function (name, subName, converter, options) {
             var hash = this.getSubs(name, options);
@@ -303,12 +331,16 @@
         },
 
         /**
-         * Gets sub-cookie as a hash object.
+         * Returns an object containing name-value pairs stored in the cookie
+         * with the given name.
          *
-         * @param  {string} name
-         * @param  {object} options
+         * @param {String} name The name of the cookie to retrieve.
+         * @param {Object} options (Optional) Containing one or more settings
+         *     for cookie parsing.
+         * @return {Object} An object of name-value pairs if the cookie with the
+         *      given name exists, null if it does not.
          *
-         * @return {object}
+         * @return {Object}
          */
         getSubs: function (name, options) {
             var cookies = this.parseCookieString(document.cookie, false, options);
@@ -321,12 +353,18 @@
         },
 
         /**
-         * Removes the cookie.
+         * Removes a cookie from the machine by setting its expiration date to
+         * sometime in the past.
          *
-         * @param  {string} name
-         * @param  {object} options
+         * @param {String} name The name of the cookie to remove.
+         * @param {Object} options (Optional) An object containing one or more
+         *      cookie options: path (a string), domain (a string), and secure
+         *      (true/false). The expires option will be overwritten by the
+         *      method.
          *
-         * @return {string} the created cookie string.
+         * @return {String} The created cookie string.
+         *
+         * @return {String} the created cookie string.
          */
         remove: function (name, options) {
             if (typeof name !== "string" || name === "") {
@@ -341,13 +379,20 @@
         },
 
         /**
-         * Removes a sub-cookie with a given name.
+         * Removes a sub cookie with a given name.
          *
-         * @param  {string} name
-         * @param  {string} subName
-         * @param  {object} options
+         * @param {String} name The name of the cookie in which the sub-cookie
+         *     exists.
+         * @param {String} subName The name of the sub-cookie to remove.
+         * @param {Object} options (Optional) An object containing one or more
+         *      cookie options: path (a string), domain (a string), expires (a
+         *      Date object), removeIfEmpty (true/false), and secure
+         *      (true/false). This must be the same settings as the original
+         *      sub-cookie.
          *
-         * @return {string} the created cookie string.
+         * @return {String} The created cookie string.
+         *
+         * @return {String} the created cookie string.
          */
         removeSub: function (name, subName, options) {
             if (typeof name !== "string" || name === "") {
@@ -360,16 +405,16 @@
 
             options = options || {};
 
-            // get all subcookies for this cookie
+            // get all sub-cookies for this cookie
             var subs = this.getSubs(name);
 
-            // delete the indicated subcookie
+            // delete the indicated sub-cookie
             if (typeof subs === "object" && subs.hasOwnProperty(subName)) {
                 delete subs[subName];
                 if (!options.removeIfEmpty) {
                     return this.setSubs(name, subs, options); // reset the cookie
                 } else {
-                    // reset the cookie if there are subcookies left, else remove
+                    // reset the cookie if there are sub-cookies left, else remove
                     for (var key in subs) {
                         if (subs.hasOwnProperty(key) && typeof subs[key] !== "function" &&
                             typeof subs[key] !== "undefined") {
@@ -386,11 +431,15 @@
         /**
          * Sets a cookie with a given name and value.
          *
-         * @param {string} name
-         * @param {mixed}  value
-         * @param {object} options
+         * @param {String} name The name of the cookie to set.
+         * @param {Any} value The value to set for the cookie.
+         * @param {Object} options (Optional) An object containing one or more
+         *      cookie options: path (a string), domain (a string), expires (a
+         *      Date object), secure (true/false), and raw (true/false). Setting
+         *      raw to true indicates that the cookie should not be URI encoded
+         *      before being set.
          *
-         * @return {string} the created cookie string.
+         * @return {String} The created cookie string.
          */
         set: function (name, value, options) {
             if (typeof name !== "string" || name === "") {
@@ -410,14 +459,16 @@
         },
 
         /**
-         * Set a sub-cookie.
+         * Sets a sub cookie with a given name to a particular value.
          *
-         * @param {string}     name
-         * @param {string}     subName
-         * @param {string|int} value
-         * @param {object}     options
+         * @param {String} name The name of the cookie to set.
+         * @param {String} subName The name of the sub-cookie to set.
+         * @param {Any} value The value to set.
+         * @param {Object} options (Optional) An object containing one or more
+         *      cookie options: path (a string), domain (a string), expires (a
+         *      Date object), and secure (true/false).
          *
-         * @return {string} The created cookie string.
+         * @return {String} The created cookie string.
          */
         setSub: function (name, subName, value, options) {
             if (typeof name !== "string" || name === "") {
@@ -443,13 +494,16 @@
         },
 
         /**
-         * Set sub-cookies.
+         * Sets a cookie with a given name to contain a hash of name-value
+         * pairs.
          *
-         * @param {string} name
-         * @param {object} value
-         * @param {object} options
+         * @param {String} name The name of the cookie to set.
+         * @param {Object} value An object containing name-value pairs.
+         * @param {Object} options (Optional) An object containing one or more
+         *      cookie options: path (a string), domain (a string), expires (a
+         *      Date object), and secure (true/false).
          *
-         * @return {string} the created cookie string.
+         * @return {String} The created cookie string.
          */
         setSubs: function (name, value, options) {
             if (typeof name !== "string" || name === "") {
@@ -473,16 +527,18 @@
         },
 
         /**
-         * Check whether cookies are enabled by the browser.
+         * Checks whether or not Cookies on the client browser.
          *
-         * @return {bool}
+         * @return {Boolean} True if Cookies are enabled, otherwise False.
          */
         enabled: function () {
             return navigator.cookieEnabled;
         },
 
         /**
-         * Clears all cookies.
+         * Clears all browser cookies.
+         *
+         * @return {Void}
          */
         clear: function () {
             var cookies = document.cookie.split(";");

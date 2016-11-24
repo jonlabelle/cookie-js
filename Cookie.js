@@ -531,8 +531,22 @@
          *
          * @return {Boolean} True if Cookies are enabled, otherwise False.
          */
-        enabled: function () {
-            return navigator.cookieEnabled;
+        enabled: function() {
+            if (navigator.cookieEnabled) {
+                return true;
+            }
+
+            var key = "_",
+                val = "_",
+                cookieEnabled = false;
+
+            this.set(key, val);
+            if (this.get(key) === val) {
+                cookieEnabled = true;
+                this.remove(key);
+            }
+
+            return cookieEnabled;
         },
 
         /**

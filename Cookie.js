@@ -88,8 +88,7 @@
          *
          * @param  {String}  name The name of the cookie.
          * @param  {String}  value The value of the cookie.
-         * @param  {Boolean} encodeValue True to encode the value, false to
-         *     leave as-is.
+         * @param  {Boolean} encodeValue True to encode the value, false to leave as-is.
          * @param  {Object}  options (Optional) Options for the cookie.
          *
          * @return {String} The formatted cookie string.
@@ -101,7 +100,7 @@
                 expires = options.expires,
                 path = options.path || "/",
                 domain = options.domain,
-                sameSite = options.sameSite || "None";
+                sameSite = options.sameSite || "Lax";
 
             if (typeof options === "object") {
                 // expire date

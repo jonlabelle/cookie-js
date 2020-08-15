@@ -56,7 +56,23 @@ Cookie.set('name', 'jon', {
 });
 ```
 
-> NOTE: Setting the `secure` option to `true` ensures the cookie is always encrypted when transmitting from client to server.
+> NOTE: Setting the `secure` option to `true` ensures the cookie will not be sent over non-https connections.
+
+Set the [SameSite](https://developer.mozilla.org/docs/Web/HTTP/Headers/Set-Cookie/SameSite) attribute.
+
+The `SameSite` attribute accepts three values:
+
+- `Lax` (*Default*) Cookies can sent in top-level navigations and will be sent along with GET request initiated by third party website. This is the default value in modern browsers.
+- `Strict` Cookies will only be sent in a first-party context and not be sent along with requests initiated by third party websites.
+- `None` Cookies will be sent in all contexts, i.e sending cross-origin is allowed.
+
+```javascript
+Cookie.set('name', 'jon', {
+  sameSite: 'Lax'
+});
+```
+
+> IMPORTANT: If `SameSite` is not specified in cookie options, the default value will be set to `Lax` for reasonably robust defense against some classes of cross-site request forgery.
 
 ### Cookie.get()
 

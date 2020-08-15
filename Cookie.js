@@ -1,12 +1,12 @@
 /*!
- * Cookie.js, v1.5.0
+ * Cookie.js, v1.6.0
  *
  * A tiny (1.24 KB gzipped), stand-alone JavaScript utility for
  * managing cookies in the browser.
  *
  * https://github.com/jonlabelle/cookie-js
  *
- * Copyright (c) 2012-2018 Jon LaBelle
+ * Copyright (c) 2012-2020 Jon LaBelle
  * Licensed under MIT (http://creativecommons.org/licenses/MIT/)
  */
 (function(global, factory) {
@@ -27,7 +27,7 @@
     /**
      * Determines if the value's type is a number.
      *
-     * @param  {Any}
+     * @param  {*} val
      *
      * @return {Boolean}
      */
@@ -81,15 +81,14 @@
         }
     }
 
-    var Cookie = {
+    return {
 
         /**
          * Creates a cookie string that can be assigned into document.cookie.
          *
          * @param  {String}  name The name of the cookie.
          * @param  {String}  value The value of the cookie.
-         * @param  {Boolean} encodeValue True to encode the value, false to
-         *     leave as-is.
+         * @param  {Boolean} encodeValue True to encode the value, false to leave as-is.
          * @param  {Object}  options (Optional) Options for the cookie.
          *
          * @return {String} The formatted cookie string.
@@ -100,7 +99,8 @@
             var text = encode(name) + "=" + (encodeValue ? encode(value) : value),
                 expires = options.expires,
                 path = options.path || "/",
-                domain = options.domain;
+                domain = options.domain,
+                sameSite = options.sameSite || "Lax";
 
             if (typeof options === "object") {
                 // expire date
@@ -126,6 +126,11 @@
                 // secure
                 if (options.secure === true) {
                     text += "; secure";
+                }
+
+                // SameSite
+                if (typeof sameSite === "string" && sameSite !== "") {
+                    text += "; SameSite=" + sameSite;
                 }
             }
 
@@ -264,7 +269,7 @@
          *      instead of the options object for backwards compatibility. When
          *      raw is set to true, the cookie value is not URI decoded.
          *
-         * @return {Any} If no converter is specified, returns a string or null
+         * @return {*} If no converter is specified, returns a string or null
          *      if the cookie doesn't exist. If the converter is specified,
          *      returns the value returned from the converter or null if the
          *      cookie doesn't exist.
@@ -310,13 +315,13 @@
          * @param {Object} options (Optional) Containing one or more settings
          *     for cookie parsing.
          *
-         * @return {Any} If the cookie doesn't exist, null is returned. If the
+         * @return {*} If the cookie doesn't exist, null is returned. If the
          *      sub-cookie doesn't exist, null if also returned. If no converter
          *      is specified and the sub-cookie exists, a string is returned. If
          *      a converter is specified and the sub-cookie exists, the value
          *      returned from the converter is returned.
          *
-         * @return {Any}
+         * @return {*}
          */
         getSub: function (name, subName, converter, options) {
             var hash = this.getSubs(name, options);
@@ -442,7 +447,7 @@
          * Sets a cookie with a given name and value.
          *
          * @param {String} name The name of the cookie to set.
-         * @param {Any} value The value to set for the cookie.
+         * @param {*} value The value to set for the cookie.
          * @param {Object} options (Optional) An object containing one or more
          *      cookie options: path (a string), domain (a string), expires (a
          *      Date object), secure (true/false), and raw (true/false). Setting
@@ -473,7 +478,7 @@
          *
          * @param {String} name The name of the cookie to set.
          * @param {String} subName The name of the sub-cookie to set.
-         * @param {Any} value The value to set.
+         * @param {*} value The value to set.
          * @param {Object} options (Optional) An object containing one or more
          *      cookie options: path (a string), domain (a string), expires (a
          *      Date object), and secure (true/false).
@@ -541,13 +546,13 @@
          *
          * @return {Boolean} True if Cookies are enabled, otherwise False.
          */
-        enabled: function() {
+        enabled: function () {
             if (navigator.cookieEnabled) {
                 return true;
             }
 
-            var key = "_",
-                val = "_",
+            var key = "_ismjclbf",
+                val = "ok",
                 cookieEnabled = false;
 
             this.set(key, val);
@@ -561,8 +566,6 @@
 
         /**
          * Clears all browser cookies.
-         *
-         * @return {Void}
          */
         clear: function () {
             var cookies = document.cookie.split(";");
@@ -574,6 +577,4 @@
             }
         }
     };
-
-    return Cookie;
 });

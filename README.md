@@ -139,7 +139,7 @@ Cookie.remove('info', {
 
 ### Cookie.setSub()
 
-**Sub-cookies allow multiple values to be stored in a single cookie. A sub-cookie looks similar to a URL and takes the following form:**
+Sub-cookies allow multiple values to be stored in a single cookie. A sub-cookie looks similar to a URL and takes the following form:
 
 ```text
 cookiename=name1=value1&name2=value2&name3=value3

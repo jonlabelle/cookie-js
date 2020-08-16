@@ -1,5 +1,4 @@
-Cookie.js
-=========
+# Cookie.js
 
 A tiny (1.24 KB gzipped), stand-alone JavaScript utility for managing cookies in the browser.
 
@@ -62,7 +61,7 @@ Cookie.set('name', 'jon', {
 
 ```javascript
 Cookie.set('name', 'jon', {
-  sameSite: 'Lax'
+  sameSite: 'Strict'
 });
 ```
 
@@ -74,7 +73,7 @@ The `SameSite` attribute accepts three values:
 | `Strict`          | Cookies will only be sent in a first-party context and not be sent along with requests initiated by third party websites.                                         |
 | `None`            | Cookies will be sent in all contexts, i.e sending cross-origin is allowed.                                                                                        |
 
-> **IMPORTANT:** If `SameSite` is not specified in cookie options, the default value will be set to `Lax` for reasonably robust defense against some classes of cross-site request forgery.
+> **IMPORTANT:** If `SameSite` is not specified in cookie options, the default value will be set to `Lax` for a reasonably robust defense against some classes of cross-site request forgery.
 
 ### Cookie.get()
 

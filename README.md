@@ -15,15 +15,15 @@ Add [Cookie.min.js](https://raw.githubusercontent.com/jonlabelle/cookie-js/maste
 
 ### Cookie.set()
 
-Create a cookie (with no options):
+**Create a cookie with no options specified**:
 
 ```javascript
 Cookie.set('name', 'jon');
 ```
 
-> NOTE: If the `option.expires` value is not set, the cookie `Expires / Max-Age` is set to *Session*.
+> **NOTE:** If the `option.expires` value is not set, the cookie `Expires / Max-Age` is set to *Session*.
 
-Create a cookie with an expiration date:
+**Create a cookie with an expiration date:**
 
 ```javascript
 Cookie.set('name', 'jon', {
@@ -31,7 +31,7 @@ Cookie.set('name', 'jon', {
 });
 ```
 
-Create a cookie that expires in 3 days:
+**Create a cookie that expires in 3 days:**
 
 ```javascript
 Cookie.set('name', 'jon', {
@@ -39,7 +39,7 @@ Cookie.set('name', 'jon', {
 });
 ```
 
-Create a cookie that can only be accessed by a specific `path` and `domain`:
+**Create a cookie that can only be accessed by a specific** `path` **and** `domain`**:**
 
 ```javascript
 Cookie.set('name', 'jon', {
@@ -48,7 +48,7 @@ Cookie.set('name', 'jon', {
 });
 ```
 
-Create a secure cookie:
+**Create a secure cookie:**
 
 ```javascript
 Cookie.set('name', 'jon', {
@@ -56,15 +56,9 @@ Cookie.set('name', 'jon', {
 });
 ```
 
-> NOTE: Setting the `secure` option to `true` ensures the cookie will not be sent over non-https connections.
+> **NOTE:** Setting the `secure` option to `true` ensures the cookie will not be sent over non-https connections.
 
-Set the [SameSite](https://developer.mozilla.org/docs/Web/HTTP/Headers/Set-Cookie/SameSite) attribute.
-
-The `SameSite` attribute accepts three values:
-
-- `Lax` (*Default*) Cookies can sent in top-level navigations and will be sent along with GET request initiated by third party website. This is the default value in modern browsers.
-- `Strict` Cookies will only be sent in a first-party context and not be sent along with requests initiated by third party websites.
-- `None` Cookies will be sent in all contexts, i.e sending cross-origin is allowed.
+**Create a cookie and set the** [SameSite](https://developer.mozilla.org/docs/Web/HTTP/Headers/Set-Cookie/SameSite) **attribute:**
 
 ```javascript
 Cookie.set('name', 'jon', {
@@ -72,21 +66,29 @@ Cookie.set('name', 'jon', {
 });
 ```
 
-> IMPORTANT: If `SameSite` is not specified in cookie options, the default value will be set to `Lax` for reasonably robust defense against some classes of cross-site request forgery.
+The `SameSite` attribute accepts three values:
+
+|       Value       |                                                                            Description                                                                            |
+|-------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Lax` (*default*) | Cookies can sent in top-level navigations and will be sent along with GET request initiated by third party website. This is the default value in modern browsers. |
+| `Strict`          | Cookies will only be sent in a first-party context and not be sent along with requests initiated by third party websites.                                         |
+| `None`            | Cookies will be sent in all contexts, i.e sending cross-origin is allowed.                                                                                        |
+
+> **IMPORTANT:** If `SameSite` is not specified in cookie options, the default value will be set to `Lax` for reasonably robust defense against some classes of cross-site request forgery.
 
 ### Cookie.get()
 
-Get a cookie accessible by the current page: 
+**Get a cookie accessible by the current page:**
 
 ```javascript
 Cookie.get('name');
 ```
 
-> NOTE: Returns `null` if the cookie does NOT exist.
+> **NOTE:** Returns `null` if the cookie does NOT exist.
 
 ### Cookie.exists()
 
-Check if a cookie exists:
+**Check if a cookie exists:**
 
 ```javascript
 if (Cookie.exists('name')) {
@@ -94,11 +96,11 @@ if (Cookie.exists('name')) {
 }
 ```
 
-> Returns `bool`, `true` if the cookie exists, and `false` if it does not.
+> **NOTE:** Returns `bool`, `true` if the cookie exists, and `false` if it does not.
 
 ### Cookie Value Types
 
-Retrieve a cookie and convert the value to `Number`:
+**Retrieve a cookie and convert the value to** `Number`**:**
 
 ```javascript
 Cookie.set('age', 34);
@@ -122,13 +124,13 @@ var value = Cookie.get('code', function (stringValue) {
 
 ### Cookie.remove()
 
-Delete a cookie:
+**Delete a cookie:**
 
 ```javascript
 Cookie.remove('name');
 ```
 
-Delete a cookie specifying the `domain`:
+**Delete a cookie specifying the** `domain`**:**
 
 ```javascript
 Cookie.remove('info', {
@@ -138,11 +140,13 @@ Cookie.remove('info', {
 
 ### Cookie.setSub()
 
-Sub-cookies allow multiple values to be stored in a single cookie. A sub-cookie looks similar to a URL and takes the following form:
+**Sub-cookies allow multiple values to be stored in a single cookie. A sub-cookie looks similar to a URL and takes the following form:**
 
-  cookiename=name1=value1&name2=value2&name3=value3
+```text
+cookiename=name1=value1&name2=value2&name3=value3
+```
 
-Create a sub-cookie named `person`:
+**Create a sub-cookie named** `person`**:**
 
 ```javascript
 Cookie.setSub('person', 'name', 'jon');
@@ -150,13 +154,13 @@ Cookie.setSub('person', 'email', 'contact@jonlabelle.com');
 Cookie.setSub('person', 'today', (new Date()).toString());
 ```
 
-Create a sub-cookie with options:
+**Create a sub-cookie with options:**
 
 ```javascript
 Cookie.setSub('person', 'age', 75, { domain: 'jonlabelle.com', secure: true });
 ```
 
-Create a sub-cookie from an `Object`:
+**Create a sub-cookie from an** `Object`**:**
 
 ```javascript
 var obj = {
@@ -167,17 +171,17 @@ var obj = {
 Cookie.setSubs('person', obj);
 ```
 
-> NOTE: Calls to `Cookie.setSubs()` will completely overwrite the cookie.
+> **NOTE:** Calls to `Cookie.setSubs()` will completely overwrite the cookie.
 
 ### Cookie.getSub()
 
-Get a sub-cookie:
+**Get a sub-cookie:**
 
 ```javascript
 Cookie.getSub('person', 'name');
 ```
 
-Get a sub-cookie and convert the value to a `Number`:
+**Get a sub-cookie and convert the value to a** `Number`**:**
 
 ```javascript
 Cookie.getSub('person', 'age', Number);
@@ -185,7 +189,7 @@ Cookie.getSub('person', 'age', Number);
 
 ### Cookie.getSubs()
 
-Get a sub-cookie as a hash `Object`:
+**Get a sub-cookie as a hash** `Object`**:**
 
 ```javascript
 var obj = Cookie.getSubs('person');
@@ -197,7 +201,7 @@ if (typeof obj === 'object') {
 
 ### Cookie.removeSub()
 
-Remove a sub-cookie:
+**Remove a sub-cookie:**
 
 ```javascript
 Cookie.removeSub('person', 'name');
@@ -205,17 +209,17 @@ Cookie.removeSub('person', 'name');
 
 ### Cookie.enabled()
 
-Check if cookies are enabled by the browser:
+**Check if cookies are enabled by the browser:**
 
 ```javascript
 Cookie.enabled();
 ```
 
-> Returns `bool`, `true` if cookies are enabled, and `false` if they are not.
+> **NOTE:** Returns `bool`, `true` if cookies are enabled, and `false` if they are not.
 
 ### Cookie.clear()
 
-Clears *all* cookies from the browser:
+**Clear all cookies from the browser:**
 
 ```javascript
 Cookie.clear();
@@ -223,7 +227,7 @@ Cookie.clear();
 
 ## Author
 
-- [Jon LaBelle](mailto:contact@jonlabelle.com)
+[Jon LaBelle](mailto:contact@jonlabelle.com)
 
 ## License
 

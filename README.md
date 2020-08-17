@@ -73,7 +73,7 @@ The `SameSite` attribute accepts three values:
 | `Strict`          | Cookies will only be sent in a first-party context and not be sent along with requests initiated by third party websites.                                         |
 | `None`            | Cookies will be sent in all contexts, i.e sending cross-origin is allowed.                                                                                        |
 
-> **IMPORTANT:** If `SameSite` is not specified in cookie options, the default value will be set to `Lax` for a reasonably robust defense against some classes of cross-site request forgery.
+> **IMPORTANT:** If `SameSite` is not specified in cookie options, the default value will be set to `Lax` for a reasonably robust defense against some classes of cross-site request forgery. Learn more at [SameSite cookies explained](https://web.dev/samesite-cookies-explained).
 
 ### Cookie.get()
 
